@@ -1,0 +1,18 @@
+{
+  "handle": "kumiko-asanoha",
+  "title": "Kumiko.Asanoha Dekoratif Masa Lambası",
+  "vendor": "Kapya.Craft",
+  "productType": "Masa Lambası",
+  "tags": ["Kumiko Serisi", "Masa Lambası"],
+  "onlineStoreUrl": "https://kapyacraft.com/products/kumiko-asanoha",
+  "priceRangeV2": {"minVariantPrice": {"amount": "4600.00", "currencyCode": "TRY"}},
+  "descriptionHtml": "<p>Asanoha, kumiko marangozluğunun en çok işlenen motifi: kenevir yaprağından çıkan altı kollu yıldız. Geleneğinde ince ahşap çıtalar çivi kullanılmadan birbirine kilitlenerek kurulur. Bu lambada aynı geometri kafes halinde gövdeyi sarıyor.</p><p>Işık kafesin arasından geçerken deseni duvara taşır. Lambayı duvardan uzaklaştırdıkça gölge büyür ve yumuşar; yaklaştırdıkça desen keskinleşir.</p><p>21 cm yüksekliğiyle komodine ve çalışma masasına oturur. Akşam ışığı için tasarlandı, kitap okumaya yetecek parlaklığı yok.</p><p>Siparişinizden sonra İstanbul'daki atölyede üretiliyor, kutulanmadan önce yakılıp deneniyor.</p>",
+  "images": [
+    {"url": "https://cdn.shopify.com/s/files/1/0828/9697/8177/files/DSC02126.jpg?v=1784901171", "altText": "Kumiko.Asanoha dekoratif masa lambası - kafes gövde ve ahşap görünümlü taban, yemek masasında yanık halde"},
+    {"url": "https://cdn.shopify.com/s/files/1/0828/9697/8177/files/DSC02133.jpg?v=1784901177", "altText": "Kumiko.Asanoha dekoratif masa lambası - ışıkla dolan kafes deseni ve ahşap görünümlü taban, yakın plan"},
+    {"url": "https://cdn.shopify.com/s/files/1/0828/9697/8177/files/Product_Staging-1efb1cf3-aada-4e9a-a96b-6f6bc59da6a2.jpg?v=1784538845", "altText": "Kumiko.Asanoha — asanoha desenli el yapımı masa lambası"},
+    {"url": "https://cdn.shopify.com/s/files/1/0828/9697/8177/files/Product_Staging-be0304c7-1f85-40f7-8dd5-cfd0daa73143.jpg?v=1784538845", "altText": "Kumiko.Asanoha masa lambası, farklı görünüm"},
+    {"url": "https://cdn.shopify.com/s/files/1/0828/9697/8177/files/asanoha-4.jpg?v=1784404007", "altText": "Kumiko.Asanoha yanık halde: desen detayı"},
+    {"url": "https://cdn.shopify.com/s/files/1/0828/9697/8177/files/DSC02122.jpg?v=1784901169", "altText": "Kumiko.Asanoha dekoratif masa lambası - yanık kafes gövde, yandan görünüm, ahşap masa üstünde"}
+  ]
+}

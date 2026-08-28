@@ -1,0 +1,306 @@
+"""Smoke tests. Stdlib unittest so there is nothing to install.
+
+    python3 -m unittest discover tests -v
+"""
+
+from __future__ import annotations
+
+import json
+import os
+import shutil
+import sys
+import tempfile
+import unittest
+
+sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+
+from autoreels import brand, captions, ffmpeg  # noqa: E402
+from autoreels.config import Config  # noqa: E402
+from autoreels.models import Image, Product, Shot, Word  # noqa: E402
+from autoreels.providers import shopify, tts  # noqa: E402
+from autoreels.providers.llm import extract_json  # noqa: E402
+from autoreels.stages import script as script_stage  # noqa: E402
+from autoreels.stages.storyboard import _lay_out_words  # noqa: E402
+
+FIXTURE = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))),
+                       "examples", "kumiko-asanoha.json")
+
+
+def sample_product() -> Product:
+    return shopify.load_json(FIXTURE)
+
+
+class TestIngest(unittest.TestCase):
+    def test_normalises_admin_shape(self):
+        product = sample_product()
+        self.assertEqual(product.handle, "kumiko-asanoha")
+        self.assertEqual(product.currency, "TRY")
+        self.assertEqual(len(product.images), 6)
+        self.assertNotIn("<p>", product.description)
+        self.assertIn("Asanoha", product.description)
+
+    def test_normalises_search_products_shape(self):
+        raw = {"data": {"products": {"edges": [{"node": {
+            "title": "Solaris Dekoratif Masa Lambası",
+            "description": "Voronoi.",
+            "featuredMedia": {"preview": {"image": {"url": "https://cdn/x.jpg"}}},
+            "priceRangeV2": {"minVariantPrice": {"amount": "6900.0", "currencyCode": "TRY"}},
+        }}]}}}
+        product = shopify.normalise(raw, store="kapyacraft.myshopify.com")
+        self.assertEqual(product.price, "6900.0")
+        self.assertEqual(len(product.images), 1)
+        # handle is derived from the title when the source omits it
+        self.assertTrue(product.handle.startswith("solaris"))
+
+    def test_deduplicates_images(self):
+        raw = {
+            "title": "X", "description": "d",
+            "featuredMedia": {"preview": {"image": {"url": "https://cdn/a.jpg"}}},
+            "media": {"edges": [
+                {"node": {"image": {"url": "https://cdn/a.jpg"}}},
+                {"node": {"image": {"url": "https://cdn/b.jpg"}}},
+            ]},
+        }
+        self.assertEqual([i.url for i in shopify.normalise(raw).images],
+                         ["https://cdn/a.jpg", "https://cdn/b.jpg"])
+
+
+class TestBrand(unittest.TestCase):
+    def test_ships_two_profiles(self):
+        self.assertEqual(brand.available(), ["generic", "kapya"])
+
+    def test_default_format_is_first(self):
+        profile = brand.load("kapya")
+        self.assertEqual(brand.get_format(profile, "auto")["id"], "motif")
+
+    def test_unknown_format_names_the_alternatives(self):
+        profile = brand.load("kapya")
+        with self.assertRaises(brand.UnknownBrand) as caught:
+            brand.get_format(profile, "nope")
+        self.assertIn("lights_off", str(caught.exception))
+
+    def test_silent_format_is_marked(self):
+        profile = brand.load("kapya")
+        self.assertFalse(brand.get_format(profile, "lights_off")["voiceover"])
+
+
+class TestScript(unittest.TestCase):
+    def setUp(self):
+        self.product = sample_product()
+        self.profile = brand.load("kapya")
+
+    def test_fallback_writes_requested_variants(self):
+        fmt = brand.get_format(self.profile, "motif")
+        scripts = script_stage.write(self.product, self.profile, fmt, Config(), variants=3)
+        self.assertEqual([s.variant for s in scripts], ["a", "b", "c"])
+        for item in scripts:
+            self.assertEqual(item.beats[0].role, "hook")
+            self.assertEqual(item.beats[-1].role, "cta")
+            self.assertAlmostEqual(item.duration(), fmt["target_seconds"], delta=1.0)
+
+    def test_fallback_variants_differ(self):
+        fmt = brand.get_format(self.profile, "motif")
+        a, b = script_stage.write(self.product, self.profile, fmt, Config(), variants=2)
+        self.assertNotEqual([x.voiceover for x in a.beats], [x.voiceover for x in b.beats])
+
+    def test_silent_format_produces_no_voiceover(self):
+        fmt = brand.get_format(self.profile, "lights_off")
+        script = script_stage.write(self.product, self.profile, fmt, Config(), variants=1)[0]
+        self.assertTrue(all(beat.voiceover == "" for beat in script.beats))
+        self.assertTrue(any(beat.on_screen for beat in script.beats))
+
+    def test_prompt_carries_the_brand_constraints(self):
+        fmt = brand.get_format(self.profile, "motif")
+        prompt = script_stage._build_prompt(self.product, self.profile, fmt, 2)
+        self.assertIn("en iyi", prompt)               # banned words reach the model
+        self.assertIn("Asanoha", prompt)              # product facts reach the model
+        self.assertIn("[5]", prompt)                  # every photo is offered
+        self.assertIn("2 distinct script variant", prompt)
+
+    def test_coerce_clamps_hostile_model_output(self):
+        fmt = brand.get_format(self.profile, "motif")
+        raw = {"beats": [
+            {"role": "narrator", "duration": 99, "image_index": 41, "motion": "barrel_roll"},
+            {"role": "cta", "duration": -3, "image_index": 0},
+        ]}
+        script = script_stage._coerce(raw, fmt, self.profile, self.product, "a")
+        self.assertEqual(script.beats[0].role, "body")
+        self.assertEqual(script.beats[0].duration, 8.0)
+        self.assertLess(script.beats[0].image_index, len(self.product.images))
+        self.assertEqual(script.beats[0].motion, "auto")
+        self.assertEqual(script.beats[1].duration, 1.5)
+
+    def test_coerce_rejects_empty_beats(self):
+        fmt = brand.get_format(self.profile, "motif")
+        with self.assertRaises(ValueError):
+            script_stage._coerce({"beats": []}, fmt, self.profile, self.product, "a")
+
+
+class TestLLMParsing(unittest.TestCase):
+    def test_reads_fenced_json(self):
+        self.assertEqual(extract_json('here:\n```json\n[{"a":1}]\n```'), [{"a": 1}])
+
+    def test_reads_bare_json_with_chatter(self):
+        self.assertEqual(extract_json('Sure! {"a": 2} hope that helps'), {"a": 2})
+
+    def test_raises_when_there_is_no_json(self):
+        with self.assertRaises(ValueError):
+            extract_json("no json here")
+
+
+class TestTiming(unittest.TestCase):
+    def test_words_fill_exactly_the_beat(self):
+        words = _lay_out_words("bir iki üç dört", 5.0, 4.0)
+        self.assertEqual(len(words), 4)
+        self.assertAlmostEqual(words[0].start, 5.0)
+        self.assertAlmostEqual(words[-1].end, 9.0, places=2)
+
+    def test_no_words_for_empty_text(self):
+        self.assertEqual(_lay_out_words("", 0.0, 3.0), [])
+
+    def test_longer_words_hold_longer(self):
+        words = _lay_out_words("a marangozluğunun", 0.0, 4.0)
+        self.assertGreater(words[1].end - words[1].start, words[0].end - words[0].start)
+
+
+class TestCaptions(unittest.TestCase):
+    def setUp(self):
+        self.dir = tempfile.mkdtemp()
+
+    def tearDown(self):
+        shutil.rmtree(self.dir, ignore_errors=True)
+
+    def _build(self, text: str) -> str:
+        words = _lay_out_words(text, 0.0, 4.0)
+        shot = Shot(index=0, image_path="x", start=0.0, duration=4.0,
+                    motion="zoom_in", on_screen=text, words=words)
+        path = captions.build([shot], os.path.join(self.dir, "c.ass"))
+        with open(path, encoding="utf-8") as handle:
+            return handle.read()
+
+    def test_one_event_per_word(self):
+        body = self._build("bir iki üç")
+        self.assertEqual(body.count("Dialogue:"), 3)
+
+    def test_active_word_is_accented(self):
+        body = self._build("bir iki")
+        self.assertIn(captions.ACCENT, body)
+
+    def test_lines_stay_inside_the_frame(self):
+        body = self._build("Asanoha, kumiko marangozluğunun en çok işlenen motifi")
+        for line in body.splitlines():
+            if not line.startswith("Dialogue:"):
+                continue
+            visible = line.split(",,")[-1].replace("{\\fad(60,0)}", "")
+            for override in ("{\\c&H0064D2FF&}", "{\\c&H00FFFFFF&}"):
+                visible = visible.replace(override, "")
+            self.assertLessEqual(len(visible), 26, f"caption line too wide: {visible!r}")
+
+    def test_braces_in_copy_do_not_become_ass_overrides(self):
+        body = self._build("bir {iki} üç")
+        self.assertIn("\\{iki\\}", body)
+
+
+class TestFFmpegFilters(unittest.TestCase):
+    def test_every_motion_produces_a_chain(self):
+        for motion in ("zoom_in", "zoom_out", "pan_left", "pan_right", "pan_up", "pan_down", "static"):
+            chain = ffmpeg.kenburns_filter(motion, 90, 1080, 1920, 30)
+            self.assertIn("zoompan", chain)
+            self.assertIn("s=1080x1920", chain)
+
+    def test_image_is_supersampled_before_zoompan(self):
+        chain = ffmpeg.kenburns_filter("zoom_in", 90, 1080, 1920, 30)
+        self.assertTrue(chain.startswith("scale=2160:3840"))
+
+    def test_colons_in_paths_are_escaped_for_the_filtergraph(self):
+        self.assertIn("\\:", ffmpeg.escape_filter_path("/tmp/a:b/c.ass"))
+
+
+class TestTTSFallback(unittest.TestCase):
+    def setUp(self):
+        self.dir = tempfile.mkdtemp()
+
+    def tearDown(self):
+        shutil.rmtree(self.dir, ignore_errors=True)
+
+    def test_silence_matches_the_reading_estimate(self):
+        text = "bir iki üç dört beş altı"
+        speech = tts.speak(text, os.path.join(self.dir, "b"), Config())
+        self.assertTrue(speech.silent)
+        self.assertTrue(os.path.exists(speech.path))
+        self.assertAlmostEqual(speech.duration, tts.estimate_duration(text), places=3)
+
+    def test_empty_text_is_zero_length(self):
+        speech = tts.speak("", os.path.join(self.dir, "b"), Config())
+        self.assertEqual(speech.duration, 0.0)
+
+
+@unittest.skipUnless(shutil.which("ffmpeg"), "ffmpeg not installed")
+class TestRender(unittest.TestCase):
+    """End-to-end: product JSON in, playable vertical MP4 out."""
+
+    def setUp(self):
+        self.dir = tempfile.mkdtemp()
+
+    def tearDown(self):
+        shutil.rmtree(self.dir, ignore_errors=True)
+
+    def test_pipeline_produces_a_vertical_video(self):
+        from autoreels.pipeline import run
+
+        images = os.path.join(self.dir, "img")
+        os.makedirs(images)
+        for index in range(3):
+            ffmpeg.run(["ffmpeg", "-y", "-loglevel", "error", "-f", "lavfi",
+                        "-i", f"color=c=0x20304{index}:size=1200x1500:d=1",
+                        "-frames:v", "1", os.path.join(images, f"{index}.jpg")])
+
+        with open(FIXTURE, encoding="utf-8") as handle:
+            product = json.load(handle)
+        product["images"] = [{"url": os.path.join(images, f"{i}.jpg")} for i in range(3)]
+        fixture = os.path.join(self.dir, "product.json")
+        with open(fixture, "w", encoding="utf-8") as handle:
+            json.dump(product, handle, ensure_ascii=False)
+
+        config = Config(runs_dir=self.dir)
+        result = run(config, product_json=fixture, brand_id="kapya", fmt_id="motif",
+                     variants=1, run_dir=os.path.join(self.dir, "run"), quiet=True)
+
+        self.assertEqual(len(result.videos), 1)
+        video = result.videos[0]
+        self.assertTrue(os.path.exists(video))
+        self.assertGreater(os.path.getsize(video), 50_000)
+        self.assertAlmostEqual(tts.probe_duration(video), result.boards[0].duration(), delta=0.5)
+
+        for name in ("product.json", "script-a.json", "storyboard-a.json", "run.json"):
+            self.assertTrue(os.path.exists(os.path.join(self.dir, "run", name)), name)
+
+    def test_storyboard_round_trip_keeps_the_narration(self):
+        """`autoreels render` reads a saved storyboard — the audio must survive it."""
+        from autoreels.models import Storyboard
+        from autoreels.pipeline import run
+        from autoreels.stages.storyboard import audio_segments
+
+        images = os.path.join(self.dir, "img")
+        os.makedirs(images)
+        ffmpeg.run(["ffmpeg", "-y", "-loglevel", "error", "-f", "lavfi",
+                    "-i", "color=c=0x203040:size=1200x1500:d=1",
+                    "-frames:v", "1", os.path.join(images, "0.jpg")])
+
+        with open(FIXTURE, encoding="utf-8") as handle:
+            product = json.load(handle)
+        product["images"] = [{"url": os.path.join(images, "0.jpg")}]
+        fixture = os.path.join(self.dir, "product.json")
+        with open(fixture, "w", encoding="utf-8") as handle:
+            json.dump(product, handle, ensure_ascii=False)
+
+        run_dir = os.path.join(self.dir, "run")
+        run(Config(runs_dir=self.dir), product_json=fixture, brand_id="kapya",
+            fmt_id="motif", variants=1, render=False, run_dir=run_dir, quiet=True)
+
+        reloaded = Storyboard.load(os.path.join(run_dir, "storyboard-a.json"))
+        self.assertEqual(len(audio_segments(reloaded)), len(reloaded.shots))
+
+
+if __name__ == "__main__":
+    unittest.main()

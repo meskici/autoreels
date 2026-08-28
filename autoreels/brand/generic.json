@@ -1,0 +1,56 @@
+{
+  "id": "generic",
+  "name": "",
+  "site": "",
+  "language": "en",
+  "market": "",
+  "positioning": "Lead with what the product does for the buyer, not with specifications.",
+  "voice": "Direct, concrete, no hype. Short sentences.",
+  "banned_words": ["best", "#1", "revolutionary", "game-changing", "unbeatable"],
+  "copy_rules": [
+    "Every claim must trace to the product description.",
+    "No invented materials, dimensions, or history.",
+    "No superlatives that cannot be substantiated."
+  ],
+  "formats": [
+    {
+      "id": "problem_solution",
+      "label": "Problem then solution",
+      "target_seconds": 20,
+      "beats": 5,
+      "voiceover": true,
+      "needs": "Any product photo set.",
+      "brief": "Open on the everyday problem in one line. Introduce the product as the fix. Show the one detail that makes it work. Close with where to get it."
+    },
+    {
+      "id": "feature_tour",
+      "label": "Feature tour",
+      "target_seconds": 20,
+      "beats": 5,
+      "voiceover": true,
+      "needs": "Detail shots of three distinct features.",
+      "brief": "Three concrete details in sequence, each with one line of why it matters. Close on the whole product."
+    },
+    {
+      "id": "ugc_testimonial",
+      "label": "UGC testimonial",
+      "target_seconds": 20,
+      "beats": 5,
+      "voiceover": true,
+      "needs": "Lifestyle or in-use photos.",
+      "brief": "First person. Why they looked, what they picked, what changed. Never fabricate a review - only use language the store can stand behind."
+    },
+    {
+      "id": "unboxing",
+      "label": "Unboxing",
+      "target_seconds": 15,
+      "beats": 4,
+      "voiceover": true,
+      "needs": "Packaging and first-look photos.",
+      "brief": "Package, open, first look, in place. Let the object carry it."
+    }
+  ],
+  "cta": "Link in bio.",
+  "hashtag_seeds": [],
+  "notes": []
+}

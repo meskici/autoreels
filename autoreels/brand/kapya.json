@@ -1,0 +1,70 @@
+{
+  "id": "kapya",
+  "name": "Kapya.Craft",
+  "site": "kapyacraft.com",
+  "language": "tr",
+  "market": "Turkey",
+  "positioning": "Handmade decorative table lamps at 2-3x the visible Turkish market price. The advantage is craft narrative and what the light does to a room. Never compete on price, discount, or spec.",
+  "voice": "Conversational, short sentences, teaching tone. Closes on a question. No hard sell.",
+  "banned_words": ["en iyi", "lider", "1 numara", "#1", "kaçırma", "son fırsat", "indirim", "kampanya", "muhteşem", "mükemmel"],
+  "copy_rules": [
+    "Turkish by default. Every claim must trace to the product description.",
+    "No invented history, materials, or dimensions.",
+    "No superlatives that cannot be substantiated.",
+    "No discount or urgency framing unless a real promotion exists.",
+    "Price is never the lead."
+  ],
+  "formats": [
+    {
+      "id": "motif",
+      "label": "What the motif means",
+      "target_seconds": 20,
+      "beats": 5,
+      "voiceover": true,
+      "needs": "Macro, wide and detail stills. Buildable from any standard product shoot.",
+      "brief": "Open on the pattern in macro. Name the motif. Pull back to the whole lamp. Explain where the motif comes from, using only facts in the product description. Close with the series name and a question."
+    },
+    {
+      "id": "lights_off",
+      "label": "Lights off",
+      "target_seconds": 15,
+      "beats": 4,
+      "voiceover": false,
+      "needs": "A genuine dark/unlit frame. Most product shoots do not have one - flag it and ask for one phone shot.",
+      "brief": "Two seconds of a lit room with the lamp off and no sound. A hand reaches. The room goes dark, the lamp blooms, the camera drifts onto the wall pattern. Text cards carry the message, no voiceover."
+    },
+    {
+      "id": "from_nature",
+      "label": "Geometry from nature",
+      "target_seconds": 20,
+      "beats": 5,
+      "voiceover": true,
+      "needs": "A real-world reference photo (basalt columns, voronoi foam, leaf veins). Not in a standard product shoot.",
+      "brief": "Open on the natural structure. Cut to the lamp with the same geometry. Say the connection plainly - found, not invented. Close on the lamp lit."
+    },
+    {
+      "id": "series",
+      "label": "Series and collection",
+      "target_seconds": 15,
+      "beats": 4,
+      "voiceover": true,
+      "needs": "Photos of two or more products in the same named series.",
+      "brief": "Each lamp in the series in turn, named. State what the series has in common. Close on all of them together and ask which one fits the viewer's room."
+    },
+    {
+      "id": "dark_vs_lit",
+      "label": "Dark vs lit",
+      "target_seconds": 15,
+      "beats": 4,
+      "voiceover": true,
+      "needs": "One unlit and one lit frame of the same lamp.",
+      "brief": "Sculpture when off, light source when on. Two objects, one price. Show both states, name the material and the motif, close on the wall pattern."
+    }
+  ],
+  "cta": "Profildeki linkten inceleyebilirsin.",
+  "hashtag_seeds": ["kapyacraft", "dekoratifaydinlatma", "masalambasi", "elyapimi", "tasarimlamba"],
+  "notes": [
+    "Plise diffuses light rather than throwing a pattern. Never write wall-pattern copy for it.",
+    "The wall pattern is the strongest and least copyable asset. Prefer real footage of the lit lamp over any generated visual."
+  ]
+}
