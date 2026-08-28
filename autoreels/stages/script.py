@@ -11,6 +11,7 @@ from the product description, so the pipeline still produces a real video.
 
 from __future__ import annotations
 
+import json
 import re
 from typing import Any
 
@@ -179,7 +180,7 @@ def _coerce(
             )
         )
     if not beats:
-        raise ValueError("model returned a variant with no beats")
+        raise ValueError(f"script variant {variant!r} has no beats")
 
     hashtags = [str(tag).lstrip("#") for tag in (raw.get("hashtags") or [])][:6]
     if not hashtags:
@@ -273,6 +274,37 @@ def _template_scripts(
                 notes="Template fallback — set ANTHROPIC_API_KEY for written-to-brief copy.",
             )
         )
+    return scripts
+
+
+def load(
+    path: str,
+    product: Product,
+    profile: dict[str, Any],
+    fmt: dict[str, Any],
+) -> list[Script]:
+    """Read scripts from a file, accepting either shape.
+
+    A saved `script-a.json` round-trips exactly. Raw model output — what you get
+    from pasting Claude's answer to the scriptwriting prompt, which carries no
+    `variant` and no `language` — is coerced and clamped like a live response.
+    """
+    with open(path, encoding="utf-8") as handle:
+        payload = json.load(handle)
+    if isinstance(payload, dict):
+        payload = [payload]
+    if not payload:
+        raise ValueError(f"{path} contains no scripts")
+
+    scripts: list[Script] = []
+    for index, item in enumerate(payload):
+        if not isinstance(item, dict):
+            raise ValueError(f"{path}: entry {index} is not an object")
+        variant = str(item.get("variant") or chr(ord("a") + index))
+        if "variant" in item and "language" in item:
+            scripts.append(Script.from_dict(item))     # our own saved shape
+        else:
+            scripts.append(_coerce(item, fmt, profile, product, variant))
     return scripts
 
 

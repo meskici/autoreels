@@ -24,8 +24,13 @@ Read the output before doing anything else. It tells you which stages are live:
 - `ffmpeg MISS` → no render is possible. Say so immediately, give the install
   line for their platform, and offer `autoreels script` (script + storyboard,
   no video) in the meantime. Do not start a run that will fail at stage 5.
-- `claude MISS` → the template scriptwriter runs instead. It reuses the store's
-  own sentences and produces something serviceable but flat. Mention it once.
+- `claude MISS` → the pipeline's template scriptwriter runs instead, which
+  reuses the store's own sentences and reads flat. You are a better
+  scriptwriter than that fallback: build the prompt the code would send
+  (`python3 -c "...script._build_prompt(...)"`, or read
+  `autoreels/stages/script.py`), write the variants yourself against the brand
+  rules, save them as a JSON array, and pass `--script-json`. Raw model shape is
+  accepted — no `variant` or `language` field needed.
 - `voice none` → the video will be silent with captions only. Fine for the
   silent formats, worth flagging for the narrated ones.
 

@@ -130,6 +130,47 @@ class TestScript(unittest.TestCase):
         self.assertEqual(script.beats[0].motion, "auto")
         self.assertEqual(script.beats[1].duration, 1.5)
 
+    def test_load_accepts_raw_model_output(self):
+        """What you get from pasting the model's answer — no variant, no language."""
+        fmt = brand.get_format(self.profile, "motif")
+        raw = [
+            {"fmt": "motif", "beats": [
+                {"role": "hook", "voiceover": "Bir.", "on_screen": "Bir", "image_index": 4,
+                 "duration": 2.5, "motion": "zoom_in"},
+                {"role": "cta", "voiceover": "İki.", "on_screen": "İki", "image_index": 0,
+                 "duration": 3.0, "motion": "zoom_out"}],
+             "caption": "c", "hashtags": ["kapyacraft"], "notes": "n"},
+            {"fmt": "motif", "beats": [
+                {"role": "hook", "voiceover": "Üç.", "on_screen": "Üç", "image_index": 1,
+                 "duration": 2.5, "motion": "static"}],
+             "caption": "c2", "hashtags": [], "notes": ""},
+        ]
+        with tempfile.TemporaryDirectory() as tmp:
+            path = os.path.join(tmp, "scripts.json")
+            with open(path, "w", encoding="utf-8") as handle:
+                json.dump(raw, handle, ensure_ascii=False)
+            scripts = script_stage.load(path, self.product, self.profile, fmt)
+        self.assertEqual([s.variant for s in scripts], ["a", "b"])
+        self.assertEqual(scripts[0].language, "tr")
+        self.assertEqual(scripts[1].hashtags, self.profile["hashtag_seeds"][:5])
+
+    def test_load_round_trips_our_own_saved_shape(self):
+        fmt = brand.get_format(self.profile, "motif")
+        original = script_stage.write(self.product, self.profile, fmt, Config(), variants=1)[0]
+        with tempfile.TemporaryDirectory() as tmp:
+            path = original.save(os.path.join(tmp, "script-a.json"))
+            reloaded = script_stage.load(path, self.product, self.profile, fmt)[0]
+        self.assertEqual(reloaded.to_dict(), original.to_dict())
+
+    def test_load_rejects_a_bare_list_of_strings(self):
+        fmt = brand.get_format(self.profile, "motif")
+        with tempfile.TemporaryDirectory() as tmp:
+            path = os.path.join(tmp, "scripts.json")
+            with open(path, "w", encoding="utf-8") as handle:
+                json.dump(["not a script"], handle)
+            with self.assertRaises(ValueError):
+                script_stage.load(path, self.product, self.profile, fmt)
+
     def test_coerce_rejects_empty_beats(self):
         fmt = brand.get_format(self.profile, "motif")
         with self.assertRaises(ValueError):

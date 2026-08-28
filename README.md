@@ -122,6 +122,9 @@ autoreels make kumiko-asanoha --format lights_off --music beds/ambient.mp3
 autoreels script kumiko-asanoha
 autoreels make kumiko-asanoha --script-json runs/<run>/script-a.json
 
+# no API key? write the script in a chat window and paste the answer in
+autoreels make kumiko-asanoha --script-json my-scripts.json
+
 # re-render one storyboard after hand-editing its timings
 autoreels render runs/<run>/storyboard-a.json
 ```
@@ -137,6 +140,12 @@ The whole point of the JSON intermediates. `script-a.json` is beats:
 
 Change the words, swap `image_index` to a better photo, retime it, then re-run
 with `--script-json`. Nothing regenerates behind your back.
+
+`--script-json` takes either shape: a `script-a.json` this pipeline saved, or
+raw model output with no `variant` or `language` field — which is what you get
+by pasting the scriptwriting prompt into any chat window and saving the reply.
+Indices, durations and motions are clamped on the way in, so a model that
+returns `"duration": 99` or `"image_index": 41` can't produce a broken render.
 
 `storyboard-a.json` is one level down: resolved file paths, absolute timings,
 and the on-screen window for every caption word. Edit it and use

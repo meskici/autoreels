@@ -166,7 +166,7 @@ def main(argv: list[str] | None = None) -> int:
     config = Config.from_env(args.env)
     try:
         return args.func(args, config)
-    except (ValueError, LookupError, RuntimeError, OSError) as exc:
+    except (ValueError, LookupError, RuntimeError, OSError, TypeError, KeyError) as exc:
         print(f"error: {exc}", file=sys.stderr)
         return 1
 

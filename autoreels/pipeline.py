@@ -102,10 +102,7 @@ def run(
 
     # --- stage 2 -----------------------------------------------------------
     if script_json:
-        with open(script_json, encoding="utf-8") as handle_:
-            payload = json.load(handle_)
-        raw = payload if isinstance(payload, list) else [payload]
-        result.scripts = [Script.from_dict(item) for item in raw]
+        result.scripts = script_stage.load(script_json, product, profile, fmt)
         say(f"2/5 script      loaded {len(result.scripts)} variant(s) from {script_json}")
     else:
         result.scripts = script_stage.write(product, profile, fmt, config, variants=variants)
