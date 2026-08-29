@@ -145,6 +145,22 @@ jobs:
               --out "runs/${{ inputs.product }}" 2>&1 | tee render.log
           fi
 
+      - name: Verify the branding landed
+        run: |
+          RUN_JSON="runs/${{ inputs.product }}/run.json"
+          python3 - "$RUN_JSON" <<'PY'
+          import json, sys
+          data = json.load(open(sys.argv[1], encoding="utf-8"))
+          b = data.get("branding") or {}
+          print(f"logo:  {b.get('logo') or '(none)'}  {b.get('logo_bytes', 0)} bytes")
+          print(f"font:  {b.get('caption_font') or '(default)'}")
+          print(f"accent:{b.get('accent') or '(default)'}")
+          for w in data.get("warnings") or []:
+              print(f"warning: {w}")
+          if not b.get("logo_bytes"):
+              raise SystemExit("brand logo never reached the render")
+          PY
+
       - name: Summarise the run
         if: always()
         run: |

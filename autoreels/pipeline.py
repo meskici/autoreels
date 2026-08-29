@@ -186,6 +186,14 @@ def _write_summary(result: RunResult, profile: dict[str, Any], fmt: dict[str, An
         "format": fmt.get("id"),
         "tts": config.resolved_tts(),
         "video": config.resolved_video(),
+        "branding": {
+            "logo": os.path.basename(result.boards[0].logo_path) if result.boards and result.boards[0].logo_path else "",
+            "logo_bytes": (os.path.getsize(result.boards[0].logo_path)
+                           if result.boards and result.boards[0].logo_path
+                           and os.path.exists(result.boards[0].logo_path) else 0),
+            "caption_font": (profile.get("identity") or {}).get("caption_font", ""),
+            "accent": ((profile.get("identity") or {}).get("caption_colors") or {}).get("accent", ""),
+        },
         "animated_shots": {
             board.variant: [s.index for s in board.shots if s.source_video]
             for board in result.boards
