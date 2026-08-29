@@ -2,40 +2,163 @@
   {
     "fmt": "motif",
     "beats": [
-      {"role": "hook", "voiceover": "Bu bir krater.", "on_screen": "Bir krater", "image_index": 0, "duration": 2.2, "motion": "zoom_in"},
-      {"role": "body", "voiceover": "Kenarlarda yığılma, ortada boşluk.", "on_screen": "Kenarda yığılma", "image_index": 1, "duration": 4.0, "motion": "pan_right"},
-      {"role": "body", "voiceover": "Göktaşı düştükten sonra kalan zemin böyle görünüyor.", "on_screen": "Göktaşı zemini", "image_index": 9, "duration": 4.8, "motion": "zoom_out"},
-      {"role": "body", "voiceover": "Yanınca gölgeler çıkıntıları uzatıyor.", "on_screen": "Gölgeler uzuyor", "image_index": 2, "duration": 4.6, "motion": "pan_left"},
-      {"role": "cta", "voiceover": "Adı Impact. Yarım kilo, yirmi yedi santim.", "on_screen": "Impact", "image_index": 3, "duration": 3.4, "motion": "zoom_out"}
+      {
+        "role": "hook",
+        "voiceover": "Bu bir krater.",
+        "on_screen": "Bir krater",
+        "image_index": 0,
+        "duration": 2.2,
+        "motion": "zoom_in"
+      },
+      {
+        "role": "body",
+        "voiceover": "Kenarlarda yığılma, ortada boşluk.",
+        "on_screen": "Kenarda yığılma",
+        "image_index": 1,
+        "duration": 4.0,
+        "motion": "pan_right"
+      },
+      {
+        "role": "body",
+        "voiceover": "Göktaşı çarpmasından kalan zemini andırıyor.",
+        "on_screen": "Göktaşı zemini",
+        "image_index": 9,
+        "duration": 4.8,
+        "motion": "zoom_out"
+      },
+      {
+        "role": "body",
+        "voiceover": "Yanınca gölgeler çıkıntıları uzatıyor.",
+        "on_screen": "Gölgeler uzuyor",
+        "image_index": 2,
+        "duration": 4.6,
+        "motion": "pan_left"
+      },
+      {
+        "role": "cta",
+        "voiceover": "Adı Impact. Yarım kilo, yirmi yedi santim.",
+        "on_screen": "Impact",
+        "image_index": 3,
+        "duration": 3.4,
+        "motion": "zoom_out"
+      }
     ],
-    "caption": "Kenarlarda yığılma, ortada boşluk. Göktaşı düştükten sonra kalan zemin böyle görünüyor. Impact yanınca gölgeler kraterin çıkıntılarını uzatıyor. Yarım kilo, yirmi yedi santim.",
-    "hashtags": ["kapyacraft", "impact", "dekoratifaydinlatma", "masalambasi", "elyapimi"],
+    "caption": "Kenarlarda yığılma, ortada boşluk. Göktaşı çarpmasından kalan zemini andırıyor. Impact yanınca gölgeler kraterin çıkıntılarını uzatıyor. Yarım kilo, yirmi yedi santim.",
+    "hashtags": [
+      "kapyacraft",
+      "impact",
+      "dekoratifaydinlatma",
+      "masalambasi",
+      "elyapimi"
+    ],
     "notes": "Three-word opening on the thing itself. Ends on two numbers instead of a question."
   },
   {
     "fmt": "motif",
     "beats": [
-      {"role": "hook", "voiceover": "Kütlenin tam içinden bir silindir geçiyor.", "on_screen": "İçinden geçiyor", "image_index": 1, "duration": 2.6, "motion": "zoom_in"},
-      {"role": "body", "voiceover": "Işık iki ucundan birden çıkıyor.", "on_screen": "İki uçtan ışık", "image_index": 0, "duration": 4.2, "motion": "zoom_out"},
-      {"role": "body", "voiceover": "Gövde beyaz ve krater dokulu.", "on_screen": "Krater dokusu", "image_index": 9, "duration": 4.4, "motion": "pan_right"},
-      {"role": "body", "voiceover": "Rafta kitapların yanında duruyor.", "on_screen": "Rafta duruyor", "image_index": 3, "duration": 4.6, "motion": "static"},
-      {"role": "cta", "voiceover": "Sende salonda mı dururdu, masada mı?", "on_screen": "Impact", "image_index": 2, "duration": 3.4, "motion": "zoom_out"}
+      {
+        "role": "hook",
+        "voiceover": "Kütlenin tam içinden bir silindir geçiyor.",
+        "on_screen": "İçinden geçiyor",
+        "image_index": 1,
+        "duration": 2.6,
+        "motion": "zoom_in"
+      },
+      {
+        "role": "body",
+        "voiceover": "Işık iki ucundan birden çıkıyor.",
+        "on_screen": "İki uçtan ışık",
+        "image_index": 0,
+        "duration": 4.2,
+        "motion": "zoom_out"
+      },
+      {
+        "role": "body",
+        "voiceover": "Gövde beyaz ve krater dokulu.",
+        "on_screen": "Krater dokusu",
+        "image_index": 9,
+        "duration": 4.4,
+        "motion": "pan_right"
+      },
+      {
+        "role": "body",
+        "voiceover": "Rafta kitapların yanında duruyor.",
+        "on_screen": "Rafta duruyor",
+        "image_index": 3,
+        "duration": 4.6,
+        "motion": "static"
+      },
+      {
+        "role": "cta",
+        "voiceover": "Sende salonda mı dururdu, masada mı?",
+        "on_screen": "Impact",
+        "image_index": 2,
+        "duration": 3.4,
+        "motion": "zoom_out"
+      }
     ],
     "caption": "Kütlenin tam içinden bir silindir geçiyor ve ışık iki ucundan birden çıkıyor. Beyaz, krater dokulu bir gövde. Yirmi yedi santim, rafta kitapların yanında duruyor. Sizde salonda mı dururdu, masada mı?",
-    "hashtags": ["kapyacraft", "impact", "heykelsilamba", "masalambasi", "tasarimlamba"],
+    "hashtags": [
+      "kapyacraft",
+      "impact",
+      "heykelsilamba",
+      "masalambasi",
+      "tasarimlamba"
+    ],
     "notes": "Form-first hook. The single question in this set closes here."
   },
   {
     "fmt": "motif",
     "beats": [
-      {"role": "hook", "voiceover": "Aynı lamba. İki farklı taş.", "on_screen": "İki farklı taş", "image_index": 4, "duration": 2.4, "motion": "zoom_in"},
-      {"role": "body", "voiceover": "Obsidyen siyahta doku daha derin okunuyor.", "on_screen": "Obsidyen: derin", "image_index": 5, "duration": 4.6, "motion": "zoom_out"},
-      {"role": "body", "voiceover": "Beyazda yüzey ışığı dışarı yayıyor.", "on_screen": "Beyaz: yayılan ışık", "image_index": 0, "duration": 4.4, "motion": "pan_left"},
-      {"role": "body", "voiceover": "İkisini de İstanbul'da, sipariş geldikten sonra basıyoruz.", "on_screen": "İstanbul'da basıyoruz", "image_index": 6, "duration": 4.8, "motion": "pan_right"},
-      {"role": "cta", "voiceover": "Kutulamadan önce yakıp deniyoruz.", "on_screen": "Impact", "image_index": 7, "duration": 3.4, "motion": "zoom_out"}
+      {
+        "role": "hook",
+        "voiceover": "Aynı lamba. İki farklı taş.",
+        "on_screen": "İki farklı taş",
+        "image_index": 4,
+        "duration": 2.4,
+        "motion": "zoom_in"
+      },
+      {
+        "role": "body",
+        "voiceover": "Obsidyen siyahta doku daha derin okunuyor.",
+        "on_screen": "Obsidyen: derin",
+        "image_index": 5,
+        "duration": 4.6,
+        "motion": "zoom_out"
+      },
+      {
+        "role": "body",
+        "voiceover": "Beyazda yüzey ışığı dışarı yayıyor.",
+        "on_screen": "Beyaz: yayılan ışık",
+        "image_index": 0,
+        "duration": 4.4,
+        "motion": "pan_left"
+      },
+      {
+        "role": "body",
+        "voiceover": "İkisini de İstanbul'da, sipariş geldikten sonra üretiyoruz.",
+        "on_screen": "İstanbul'da üretiyoruz",
+        "image_index": 6,
+        "duration": 4.8,
+        "motion": "pan_right"
+      },
+      {
+        "role": "cta",
+        "voiceover": "Kutulamadan önce yakıp deniyoruz.",
+        "on_screen": "Impact",
+        "image_index": 7,
+        "duration": 3.4,
+        "motion": "zoom_out"
+      }
     ],
-    "caption": "Impact beyaz ve obsidyen siyah. Siyahta krater dokusu daha derin okunuyor, beyazda yüzey ışığı dışarı yayıyor. İkisini de İstanbul'da, sipariş geldikten sonra basıyoruz ve kutulamadan önce yakıp deniyoruz.",
-    "hashtags": ["kapyacraft", "impact", "obsidyen", "elyapimi", "masalambasi"],
+    "caption": "Impact beyaz ve obsidyen siyah. Siyahta krater dokusu daha derin okunuyor, beyazda yüzey ışığı dışarı yayıyor. İkisini de İstanbul'da, sipariş geldikten sonra üretiyoruz ve kutulamadan önce yakıp deniyoruz.",
+    "hashtags": [
+      "kapyacraft",
+      "impact",
+      "obsidyen",
+      "elyapimi",
+      "masalambasi"
+    ],
     "notes": "First person plural puts the workshop in the frame. No question; the last line is what the maker does."
   }
 ]

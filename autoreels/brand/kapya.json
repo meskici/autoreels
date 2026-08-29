@@ -124,6 +124,13 @@
     "Encyclopedia register: 'anlamına geliyor', 'yer almaktadır', 'olarak bilinir'. Say 'demek', 'diyorlar'.",
     "Every sentence the same length. Put a two-word fragment next to a long one.",
     "Decorative adverb pairs (katman katman, tek tek) used as filler rather than description.",
-    "Opening on the product name. Open on the thing the viewer can see."
+    "Opening on the product name. Open on the thing the viewer can see.",
+    "Turning a fact about a motif's history into a present-tense claim about this product."
+  ],
+  "never_claim": [
+    "Do not say or imply that this object is carved, joined, turned, woven or worked from wood, stone or metal. It is not.",
+    "A historical craft reference must stay in the past or stay about the tradition. 'Geleneğinde çıtalar çivisiz birleşir' is fine. 'Marangozlar çıtaları geçiriyor' reads as a claim about this lamp and is not.",
+    "Do not name the production method. The brand sells the object and the light, not how it is made. Say 'üretiyoruz', never 'basıyoruz'.",
+    "Prefer the product description's own verb over a stronger one. If it says 'andırıyor', do not write 'öyle görünüyor'."
   ]
 }

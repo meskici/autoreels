@@ -7,6 +7,7 @@ from __future__ import annotations
 
 import json
 import os
+import re
 import shutil
 import subprocess
 import sys
@@ -388,6 +389,54 @@ class TestCuratedCopy(unittest.TestCase):
                 lengths = [len(b.voiceover.split()) for b in v.beats]
                 self.assertGreater(max(lengths) - min(lengths), 1,
                                    f"{name}/{v.variant} is metronomic: {lengths}")
+
+
+class TestMaterialTruth(unittest.TestCase):
+    """Kapya.Craft lamps are printed, not woodworked, and the brand does not
+    sell the method. A shipped script must not imply either."""
+
+    PATHS = ("impact", "kumiko-seigaiha")
+
+    # Verbs and nouns that describe someone working timber, stone or a printer.
+    CRAFT_CLAIM = re.compile(
+        r"marangoz|çıta|çivi|oyuyor|oydu|yontuyor|yontul|"
+        r"rendel|zımparal|tornal|dokuyor|dokunmuş",
+        re.I)
+    METHOD_CLAIM = re.compile(r"\bbas[ıi]yoruz\b|\b3d\b|üç boyutlu|filament|petg|pla\b", re.I)
+
+    def setUp(self):
+        self.profile = brand.load("kapya")
+        self.fmt = brand.get_format(self.profile, "motif")
+
+    def _spoken(self, name):
+        root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+        product = shopify.load_json(os.path.join(root, "examples", "catalog", f"{name}.json"))
+        scripts = script_stage.load(
+            os.path.join(root, "examples", "scripts", f"{name}.json"),
+            product, self.profile, self.fmt)
+        for v in scripts:
+            text = " ".join(b.voiceover + " " + b.on_screen for b in v.beats)
+            yield v.variant, text + " " + v.caption
+
+    def test_no_woodworking_claims(self):
+        for name in self.PATHS:
+            for variant, text in self._spoken(name):
+                hit = self.CRAFT_CLAIM.search(text)
+                self.assertIsNone(
+                    hit, f"{name}/{variant} implies handwork: {hit.group(0) if hit else ''!r}")
+
+    def test_production_method_is_never_named(self):
+        for name in self.PATHS:
+            for variant, text in self._spoken(name):
+                hit = self.METHOD_CLAIM.search(text)
+                self.assertIsNone(
+                    hit, f"{name}/{variant} names the method: {hit.group(0) if hit else ''!r}")
+
+    def test_the_rules_reach_the_scriptwriting_prompt(self):
+        product = shopify.load_json(FIXTURE)
+        prompt = script_stage._build_prompt(product, self.profile, self.fmt, 3)
+        self.assertIn("Never claim", prompt)
+        self.assertIn("carved, joined", prompt)
 
 
 class TestAnimateSelection(unittest.TestCase):
