@@ -325,19 +325,41 @@ class TestBrandIdentity(unittest.TestCase):
 class TestLogoOverlay(unittest.TestCase):
     def test_every_anchor_produces_a_chain(self):
         for pos in ffmpeg.LOGO_ANCHORS:
-            chain = ffmpeg.logo_overlay_chain("base", "3:v", "v", canvas_width=1080,
-                                              position=pos, width_pct=26, opacity=0.8)
-            self.assertEqual(len(chain), 2)
-            self.assertIn("overlay=", chain[1])
+            for shadow in (False, True):
+                chain = ffmpeg.logo_overlay_chain("base", "3:v", "v", canvas_width=1080,
+                                                  position=pos, width_pct=26,
+                                                  opacity=0.8, shadow=shadow)
+                self.assertGreaterEqual(len(chain), 2)
+                self.assertTrue(chain[-1].endswith("[v]"), chain[-1])
+                self.assertIn("overlay=", chain[-1])
+
+    def test_the_shadow_pass_is_optional(self):
+        plain = ffmpeg.logo_overlay_chain("base", "1:v", "v", canvas_width=1080,
+                                          position="top-left", width_pct=26,
+                                          opacity=0.8, shadow=False)
+        shadowed = ffmpeg.logo_overlay_chain("base", "1:v", "v", canvas_width=1080,
+                                             position="top-left", width_pct=26,
+                                             opacity=0.8, shadow=True)
+        self.assertEqual(len(plain), 2)
+        self.assertNotIn("boxblur", " ".join(plain))
+        self.assertIn("boxblur", " ".join(shadowed))
+
+    def test_the_default_logo_is_the_ink_cut(self):
+        """Every catalogue photo is a lit frame, so cream disappears on them."""
+        identity = brand.load("kapya")["identity"]
+        self.assertIn("kapya-logo.png", identity["logo_url"])
+        self.assertIn("cream", identity["logo_url_dark_frames"])
 
     def test_opacity_is_clamped(self):
         chain = ffmpeg.logo_overlay_chain("base", "1:v", "v", canvas_width=1080,
-                                          position="top-left", width_pct=26, opacity=9.0)
+                                          position="top-left", width_pct=26,
+                                          opacity=9.0, shadow=False)
         self.assertIn("aa=1.000", chain[0])
 
     def test_width_follows_the_canvas(self):
         chain = ffmpeg.logo_overlay_chain("base", "1:v", "v", canvas_width=1080,
-                                          position="top-left", width_pct=26, opacity=0.8)
+                                          position="top-left", width_pct=26,
+                                          opacity=0.8, shadow=False)
         self.assertIn("scale=280:-1", chain[0])
 
 
