@@ -4,13 +4,24 @@ from __future__ import annotations
 
 import os
 
+import os as _os
+
 from .. import captions, ffmpeg
 from ..config import Config
 from ..models import Storyboard
 from . import storyboard as storyboard_stage
 
 
-def render(board: Storyboard, config: Config, run_dir: str, dest: str) -> str:
+FONTS_DIR = _os.path.join(_os.path.dirname(_os.path.dirname(_os.path.abspath(__file__))), "fonts")
+
+
+def render(
+    board: Storyboard,
+    config: Config,
+    run_dir: str,
+    dest: str,
+    identity: dict | None = None,
+) -> str:
     binary = ffmpeg.require(config.ffmpeg)
     work = os.path.join(run_dir, f"work-{board.variant}")
     os.makedirs(work, exist_ok=True)
@@ -44,12 +55,17 @@ def render(board: Storyboard, config: Config, run_dir: str, dest: str) -> str:
 
     silent = ffmpeg.concat_clips(binary, clips, os.path.join(work, "silent.mp4"), work)
 
+    identity = identity or {}
+    palette = identity.get("caption_colors") or {}
     subtitle_file = captions.build(
         board.shots,
         os.path.join(work, "captions.ass"),
         width=board.width,
         height=board.height,
-        font=config.caption_font,
+        font=identity.get("caption_font") or config.caption_font,
+        text_colour=palette.get("text", captions.DEFAULT_TEXT),
+        outline_colour=palette.get("outline", captions.DEFAULT_OUTLINE),
+        accent_colour=palette.get("accent", captions.DEFAULT_ACCENT),
     )
 
     duration = board.duration()
@@ -71,4 +87,10 @@ def render(board: Storyboard, config: Config, run_dir: str, dest: str) -> str:
         music=board.music_path,
         music_volume=config.music_volume,
         duration=duration,
+        fonts_dir=FONTS_DIR,
+        logo=board.logo_path,
+        logo_position=board.logo_position,
+        logo_width_pct=board.logo_width_pct,
+        logo_opacity=board.logo_opacity,
+        canvas_width=board.width,
     )

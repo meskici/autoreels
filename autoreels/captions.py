@@ -22,14 +22,30 @@ YCbCr Matrix: TV.709
 
 [V4+ Styles]
 Format: Name, Fontname, Fontsize, PrimaryColour, SecondaryColour, OutlineColour, BackColour, Bold, Italic, Underline, StrikeOut, ScaleX, ScaleY, Spacing, Angle, BorderStyle, Outline, Shadow, Alignment, MarginL, MarginR, MarginV, Encoding
-Style: Caption,{font},{size},&H00FFFFFF,&H00FFFFFF,&H00101010,&H80000000,-1,0,0,0,100,100,0,0,1,{outline},{shadow},2,{margin_h},{margin_h},{margin_v},1
+Style: Caption,{font},{size},{text},{text},{outline_colour},&H80000000,-1,0,0,0,100,100,0,0,1,{outline},{shadow},2,{margin_h},{margin_h},{margin_v},1
 
 [Events]
 Format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text
 """
 
-# Accent applied to the word currently being spoken. ASS colours are &HBBGGRR.
-ACCENT = "&H0064D2FF&"  # warm amber, reads on both dark and light frames
+# ASS stores colour as &HBBGGRR, the reverse of the hex a designer hands you.
+DEFAULT_TEXT = "#ffffff"
+DEFAULT_OUTLINE = "#101010"
+DEFAULT_ACCENT = "#ffd264"
+
+
+def ass_colour(hex_colour: str, trailing: bool = True) -> str:
+    """#rrggbb -> &H00BBGGRR, the byte order ASS actually wants."""
+    value = (hex_colour or "").lstrip("#")
+    if len(value) != 6:
+        raise ValueError(f"expected #rrggbb, got {hex_colour!r}")
+    red, green, blue = value[0:2], value[2:4], value[4:6]
+    body = f"&H00{blue}{green}{red}".upper()
+    return body + "&" if trailing else body
+
+
+# Kept for callers that want the old constant; the brand profile overrides it.
+ACCENT = ass_colour(DEFAULT_ACCENT)
 
 
 def _timestamp(seconds: float) -> str:
@@ -73,8 +89,18 @@ def build(
     width: int = 1080,
     height: int = 1920,
     font: str = "DejaVu Sans",
+    text_colour: str = DEFAULT_TEXT,
+    outline_colour: str = DEFAULT_OUTLINE,
+    accent_colour: str = DEFAULT_ACCENT,
 ) -> str:
-    """Write an .ass file covering every shot's caption words."""
+    """Write an .ass file covering every shot's caption words.
+
+    Colours arrive as ordinary #rrggbb so a brand profile can carry the same
+    values a designer would read off the site.
+    """
+    text_ass = ass_colour(text_colour)
+    outline_ass = ass_colour(outline_colour)
+    accent_ass = ass_colour(accent_colour)
     size = int(height * 0.042)          # ~80px at 1920
     margin_h = 80
     # A bold sans glyph advances roughly half its point size. Budget lines
@@ -85,6 +111,8 @@ def build(
             width=width,
             height=height,
             font=font,
+            text=text_ass.rstrip("&"),
+            outline_colour=outline_ass.rstrip("&"),
             size=size,
             outline=max(int(size * 0.07), 4),
             shadow=2,
@@ -103,7 +131,7 @@ def build(
                 parts = []
                 for i in group:
                     if i == position:
-                        parts.append(f"{{\\c{ACCENT}}}{texts[i]}{{\\c&H00FFFFFF&}}")
+                        parts.append(f"{{\\c{accent_ass}}}{texts[i]}{{\\c{text_ass}}}")
                     else:
                         parts.append(texts[i])
                 body = "{\\fad(60,0)}" + " ".join(parts)

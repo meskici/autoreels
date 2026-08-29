@@ -150,6 +150,10 @@ class Storyboard(JsonMixin):
     shots: list[Shot] = field(default_factory=list)
     audio_path: str = ""
     music_path: str = ""
+    logo_path: str = ""        # brand mark burned into every frame
+    logo_position: str = "top-left"
+    logo_width_pct: int = 26
+    logo_opacity: float = 0.85
 
     @classmethod
     def from_dict(cls, data: dict[str, Any]) -> "Storyboard":

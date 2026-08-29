@@ -40,6 +40,9 @@ Copy rules (hard constraints):
 
 Never use these words or anything equivalent: {banned}
 
+Copy smells to avoid (these are what make writing sound machine-made):
+{smells}
+
 {brand_notes}
 
 # Video format: {fmt_label}
@@ -122,6 +125,8 @@ def _build_prompt(
         voice=profile.get("voice", ""),
         copy_rules="\n".join(f"- {rule}" for rule in profile.get("copy_rules", [])),
         banned=", ".join(profile.get("banned_words", [])) or "(none)",
+        smells="\n".join(f"- {smell}" for smell in profile.get("copy_smells", []))
+               or "- (none listed)",
         brand_notes=("Brand notes:\n" + "\n".join(f"- {n}" for n in notes)) if notes else "",
         fmt_label=fmt.get("label", fmt["id"]),
         fmt_brief=fmt.get("brief", ""),

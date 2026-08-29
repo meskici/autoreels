@@ -278,6 +278,118 @@ class TestTTSFallback(unittest.TestCase):
         self.assertEqual(speech.duration, 0.0)
 
 
+class TestBrandIdentity(unittest.TestCase):
+    def setUp(self):
+        self.identity = brand.load("kapya")["identity"]
+
+    def test_hex_to_ass_reverses_the_byte_order(self):
+        self.assertEqual(captions.ass_colour("#c9a24b"), "&H004BA2C9&")
+        self.assertEqual(captions.ass_colour("ede6d8"), "&H00D8E6ED&")
+
+    def test_bad_hex_is_rejected(self):
+        with self.assertRaises(ValueError):
+            captions.ass_colour("#fff")
+
+    def test_caption_font_ships_with_the_repo(self):
+        from autoreels.stages.render import FONTS_DIR
+        path = os.path.join(FONTS_DIR, self.identity["caption_font_file"])
+        self.assertTrue(os.path.exists(path), path)
+
+    def test_caption_font_can_spell_turkish(self):
+        """The theme's body font cannot; this is why captions use the heading font."""
+        from autoreels.stages.render import FONTS_DIR
+        path = os.path.join(FONTS_DIR, self.identity["caption_font_file"])
+        with open(path, "rb") as handle:
+            blob = handle.read()
+        self.assertGreater(len(blob), 50_000)
+        self.assertEqual(blob[:4], b"\x00\x01\x00\x00")  # TrueType magic
+
+    def test_brand_colours_reach_the_subtitle_style(self):
+        palette = self.identity["caption_colors"]
+        shot = Shot(index=0, image_path="x", start=0.0, duration=2.0, motion="zoom_in",
+                    on_screen="Adı Seigaiha",
+                    words=[Word("Adı", 0.0, 1.0), Word("Seigaiha", 1.0, 2.0)])
+        with tempfile.TemporaryDirectory() as tmp:
+            path = captions.build([shot], os.path.join(tmp, "c.ass"),
+                                  font=self.identity["caption_font"],
+                                  text_colour=palette["text"],
+                                  outline_colour=palette["outline"],
+                                  accent_colour=palette["accent"])
+            with open(path, encoding="utf-8") as handle:
+                body = handle.read()
+        self.assertIn(captions.ass_colour(palette["accent"]), body)
+        self.assertIn("Playfair Display", body)
+
+
+class TestLogoOverlay(unittest.TestCase):
+    def test_every_anchor_produces_a_chain(self):
+        for pos in ffmpeg.LOGO_ANCHORS:
+            chain = ffmpeg.logo_overlay_chain("base", "3:v", "v", canvas_width=1080,
+                                              position=pos, width_pct=26, opacity=0.8)
+            self.assertEqual(len(chain), 2)
+            self.assertIn("overlay=", chain[1])
+
+    def test_opacity_is_clamped(self):
+        chain = ffmpeg.logo_overlay_chain("base", "1:v", "v", canvas_width=1080,
+                                          position="top-left", width_pct=26, opacity=9.0)
+        self.assertIn("aa=1.000", chain[0])
+
+    def test_width_follows_the_canvas(self):
+        chain = ffmpeg.logo_overlay_chain("base", "1:v", "v", canvas_width=1080,
+                                          position="top-left", width_pct=26, opacity=0.8)
+        self.assertIn("scale=280:-1", chain[0])
+
+
+class TestCuratedCopy(unittest.TestCase):
+    """The shipped scripts are the brand's voice; guard them against slop."""
+
+    PATHS = ("impact", "kumiko-seigaiha")
+
+    def setUp(self):
+        self.profile = brand.load("kapya")
+        self.fmt = brand.get_format(self.profile, "motif")
+
+    def _load(self, name):
+        root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+        product = shopify.load_json(os.path.join(root, "examples", "catalog", f"{name}.json"))
+        return script_stage.load(
+            os.path.join(root, "examples", "scripts", f"{name}.json"),
+            product, self.profile, self.fmt)
+
+    def test_at_most_one_question_per_set(self):
+        for name in self.PATHS:
+            asked = sum(1 for v in self._load(name)
+                        for b in v.beats if b.voiceover.strip().endswith("?"))
+            self.assertLessEqual(asked, 1, f"{name}: {asked} closing questions")
+
+    def test_hooks_are_all_different(self):
+        for name in self.PATHS:
+            hooks = {v.beats[0].voiceover for v in self._load(name)}
+            self.assertEqual(len(hooks), 3, f"{name}: {hooks}")
+
+    def test_no_encyclopedia_register(self):
+        for name in self.PATHS:
+            for v in self._load(name):
+                body = " ".join(b.voiceover for b in v.beats).lower()
+                for phrase in ("anlamına geliyor", "yer almakta", "olarak bilinir"):
+                    self.assertNotIn(phrase, body, f"{name}/{v.variant}")
+
+    def test_no_banned_words(self):
+        banned = self.profile["banned_words"]
+        for name in self.PATHS:
+            for v in self._load(name):
+                body = " ".join(b.voiceover + b.on_screen for b in v.beats).lower()
+                hits = [w for w in banned if w in body]
+                self.assertEqual(hits, [], f"{name}/{v.variant}: {hits}")
+
+    def test_sentence_lengths_vary_within_a_variant(self):
+        for name in self.PATHS:
+            for v in self._load(name):
+                lengths = [len(b.voiceover.split()) for b in v.beats]
+                self.assertGreater(max(lengths) - min(lengths), 1,
+                                   f"{name}/{v.variant} is metronomic: {lengths}")
+
+
 class TestAnimateSelection(unittest.TestCase):
     def test_spec_forms(self):
         self.assertEqual(animate_stage.select("none", 5), set())

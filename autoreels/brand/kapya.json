@@ -5,7 +5,7 @@
   "language": "tr",
   "market": "Turkey",
   "positioning": "Handmade decorative table lamps at 2-3x the visible Turkish market price. The advantage is craft narrative and what the light does to a room. Never compete on price, discount, or spec.",
-  "voice": "Conversational, short sentences, teaching tone. Closes on a question. No hard sell.",
+  "voice": "Someone talking, not a museum label. Short spoken sentences, fragments welcome. Name a moment: the evening, the wall, the bedside table. Vary sentence length hard.",
   "banned_words": [
     "en iyi",
     "lider",
@@ -90,5 +90,40 @@
       "Kumiko Serisi"
     ],
     "avoid_reason": "Fine repeating lattice. Image-to-video models redraw it between frames and the motif comes out wrong, which is the one thing this brand cannot ship."
-  }
+  },
+  "identity": {
+    "logo_url": "https://cdn.shopify.com/s/files/1/0828/9697/8177/files/kapya-logo-cream.png?v=1783077987",
+    "logo_position": "top-left",
+    "logo_width_pct": 26,
+    "logo_opacity": 0.82,
+    "tagline": "Işık, katman katman.",
+    "instagram": "kapya.craft",
+    "caption_font": "Playfair Display",
+    "caption_font_file": "PlayfairDisplay-Bold.ttf",
+    "colors": {
+      "cream": "#ede6d8",
+      "ink": "#2a2520",
+      "gold": "#c9a24b",
+      "rust": "#a53324"
+    },
+    "caption_colors": {
+      "text": "#ede6d8",
+      "outline": "#2a2520",
+      "accent": "#c9a24b"
+    },
+    "notes": [
+      "Fonts and colours read from the live Shopify theme (config/settings_data.json).",
+      "The theme's body font is Assistant, which has no g-breve, I-dot or s-cedilla. It cannot spell Turkish, so captions use the heading font Playfair Display instead.",
+      "kapya-logo-cream.png is the cream cut, which holds on both lit and dark frames."
+    ]
+  },
+  "copy_smells": [
+    "Ending every variant on a question. One question across a set of three, at most.",
+    "Impersonal verbs with nobody doing them (tekrarlanıyor, üretiliyor, kuruluyor). Give the verb an actor: Japon marangozlar çıtaları geçiriyor.",
+    "Three-item lists (kumaşta, seramikte ve ahşapta). Two beats a three.",
+    "Encyclopedia register: 'anlamına geliyor', 'yer almaktadır', 'olarak bilinir'. Say 'demek', 'diyorlar'.",
+    "Every sentence the same length. Put a two-word fragment next to a long one.",
+    "Decorative adverb pairs (katman katman, tek tek) used as filler rather than description.",
+    "Opening on the product name. Open on the thing the viewer can see."
+  ]
 }

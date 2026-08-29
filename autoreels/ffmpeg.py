@@ -200,6 +200,42 @@ def build_voice_track(
     return dest
 
 
+LOGO_ANCHORS = {
+    "top-left": ("{m}", "{m}"),
+    "top-right": ("W-w-{m}", "{m}"),
+    "bottom-left": ("{m}", "H-h-{m}"),
+    "bottom-right": ("W-w-{m}", "H-h-{m}"),
+    "top-center": ("(W-w)/2", "{m}"),
+    "bottom-center": ("(W-w)/2", "H-h-{m}"),
+}
+
+
+def logo_overlay_chain(
+    label_in: str,
+    logo_stream: str,
+    label_out: str,
+    *,
+    canvas_width: int,
+    position: str,
+    width_pct: int,
+    opacity: float,
+) -> list[str]:
+    """Scale the brand mark, fade it back, and pin it to a corner.
+
+    Kept off the caption band: the logo sits at the top by default because the
+    captions own the lower third.
+    """
+    logo_w = max(int(canvas_width * width_pct / 100), 40)
+    margin = max(int(canvas_width * 0.055), 24)
+    x_expr, y_expr = LOGO_ANCHORS.get(position, LOGO_ANCHORS["top-left"])
+    return [
+        f"[{logo_stream}]scale={logo_w}:-1,format=rgba,"
+        f"colorchannelmixer=aa={max(min(opacity, 1.0), 0.0):.3f}[logo]",
+        f"[{label_in}][logo]overlay=x={x_expr.format(m=margin)}:y={y_expr.format(m=margin)}"
+        f":format=auto[{label_out}]",
+    ]
+
+
 def finalise(
     ffmpeg: str,
     *,
@@ -210,10 +246,17 @@ def finalise(
     music: str,
     music_volume: float,
     duration: float,
+    fonts_dir: str = "",
+    logo: str = "",
+    logo_position: str = "top-left",
+    logo_width_pct: int = 26,
+    logo_opacity: float = 0.85,
+    canvas_width: int = 1080,
 ) -> str:
-    """Burn captions, mix voice and music, write the deliverable."""
+    """Burn captions and the brand mark, mix voice and music, write the file."""
     args = [ffmpeg, "-y", "-loglevel", "error", "-i", video]
     audio_inputs: list[str] = []
+    logo_index = 0
 
     if voice:
         args += ["-i", voice]
@@ -221,8 +264,25 @@ def finalise(
     if music and os.path.exists(music):
         args += ["-stream_loop", "-1", "-i", music]
         audio_inputs.append("music")
+    if logo and os.path.exists(logo):
+        logo_index = 1 + len(audio_inputs)
+        args += ["-i", logo]
 
-    chains = [f"[0:v]subtitles=filename='{escape_filter_path(subtitles)}'[v]"]
+    subs = f"subtitles=filename='{escape_filter_path(subtitles)}'"
+    if fonts_dir and os.path.isdir(fonts_dir):
+        # libass will not find a font that is not installed system-wide unless
+        # it is pointed at the directory holding it.
+        subs += f":fontsdir='{escape_filter_path(fonts_dir)}'"
+
+    if logo and os.path.exists(logo):
+        chains = [f"[0:v]{subs}[base]"]
+        chains += logo_overlay_chain(
+            "base", f"{logo_index}:v", "v",
+            canvas_width=canvas_width, position=logo_position,
+            width_pct=logo_width_pct, opacity=logo_opacity,
+        )
+    else:
+        chains = [f"[0:v]{subs}[v]"]
 
     if audio_inputs == ["voice"]:
         chains.append(f"[1:a]atrim=0:{duration:.3f},asetpts=N/SR/TB[a]")

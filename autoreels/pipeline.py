@@ -24,6 +24,7 @@ from typing import Any
 
 from . import brand
 from .config import Config
+from .http import download
 from .models import Product, Script, Storyboard
 from .providers import shopify, tts, video
 from .stages import animate as animate_stage
@@ -116,8 +117,15 @@ def run(
 
     # --- stages 3 + 4 ------------------------------------------------------
     say(f"3/5 voiceover   provider={tts.available(config)}")
+    identity = profile.get("identity") or {}
+    logo_path = _fetch_logo(identity, run_dir, result.warnings)
+
     for item in result.scripts:
         board = storyboard_stage.build(item, product, config, run_dir, music=music)
+        board.logo_path = logo_path
+        board.logo_position = identity.get("logo_position", "top-left")
+        board.logo_width_pct = int(identity.get("logo_width_pct", 26))
+        board.logo_opacity = float(identity.get("logo_opacity", 0.85))
         result.boards.append(board)
         summary = storyboard_stage.summarise(board, item)
         say(
@@ -137,7 +145,7 @@ def run(
     if render:
         for item, board in zip(result.scripts, result.boards):
             dest = os.path.join(run_dir, f"{_slug(product.handle)}-{board.variant}.mp4")
-            path = render_stage.render(board, config, run_dir, dest)
+            path = render_stage.render(board, config, run_dir, dest, identity=identity)
             board.save(os.path.join(run_dir, f"storyboard-{board.variant}.json"))
             result.videos.append(path)
             say(f"5/5 render      {path}")
@@ -146,6 +154,24 @@ def run(
 
     _write_summary(result, profile, fmt, config)
     return result
+
+
+def _fetch_logo(identity: dict[str, Any], run_dir: str, warnings: list[str]) -> str:
+    """Pull the brand mark next to the run. A missing logo never stops a render."""
+    url = identity.get("logo_url") or ""
+    if not url:
+        return ""
+    if "://" not in url:
+        return url if os.path.exists(url) else ""
+    suffix = os.path.splitext(url.split("?")[0])[1] or ".png"
+    dest = os.path.join(run_dir, f"logo{suffix}")
+    if os.path.exists(dest):
+        return dest
+    try:
+        return download(url, dest)
+    except Exception as exc:  # noqa: BLE001
+        warnings.append(f"logo not fetched ({exc}); rendering without it")
+        return ""
 
 
 def _write_summary(result: RunResult, profile: dict[str, Any], fmt: dict[str, Any], config: Config) -> None:

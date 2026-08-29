@@ -63,5 +63,22 @@
     "prompt_hint": "Lighting stays as photographed. Nothing in the scene moves except the camera.",
     "avoid_tags": [],
     "avoid_reason": ""
+  },
+  "identity": {
+    "logo_url": "",
+    "logo_position": "top-left",
+    "logo_width_pct": 26,
+    "logo_opacity": 0.85,
+    "tagline": "",
+    "instagram": "",
+    "caption_font": "DejaVu Sans",
+    "caption_font_file": "",
+    "colors": {},
+    "caption_colors": {
+      "text": "#ffffff",
+      "outline": "#101010",
+      "accent": "#ffd264"
+    },
+    "notes": []
   }
 }
