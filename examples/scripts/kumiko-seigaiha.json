@@ -1,0 +1,41 @@
+[
+  {
+    "fmt": "motif",
+    "beats": [
+      {"role": "hook", "voiceover": "Bu desenin adı \"mavi deniz dalgası\" anlamına geliyor.", "on_screen": "Mavi deniz dalgası", "image_index": 2, "duration": 3.0, "motion": "zoom_in"},
+      {"role": "body", "voiceover": "Seigaiha, üst üste binen yay dizilerinden kuruluyor.", "on_screen": "Üst üste binen yaylar", "image_index": 0, "duration": 4.2, "motion": "zoom_out"},
+      {"role": "body", "voiceover": "Altıncı yüzyıldan beri kumaşta, seramikte ve ahşapta tekrarlanıyor.", "on_screen": "6. yüzyıldan beri", "image_index": 3, "duration": 4.8, "motion": "pan_right"},
+      {"role": "body", "voiceover": "Kafes ışığı katman katman bölüyor.", "on_screen": "Işık katmanlara ayrılıyor", "image_index": 1, "duration": 4.5, "motion": "zoom_in"},
+      {"role": "cta", "voiceover": "Kumiko serisinde. Hangi desen senin odana uyar?", "on_screen": "Kumiko Serisi", "image_index": 0, "duration": 3.0, "motion": "zoom_out"}
+    ],
+    "caption": "Seigaiha'nın adı \"mavi deniz dalgası\" anlamına geliyor. Üst üste binen yay dizileri altıncı yüzyıldan beri kumaşta, seramikte ve ahşapta tekrarlanıyor. Kafesteki aynı geometri ışığı katman katman bölüyor. Sizce bir desen bir odayı ne kadar değiştirir?",
+    "hashtags": ["kapyacraft", "seigaiha", "kumiko", "dekoratifaydinlatma", "masalambasi"],
+    "notes": "Name-first hook — the meaning is the strongest thing this product owns. Only 4 photos, so photo 0 carries two beats."
+  },
+  {
+    "fmt": "motif",
+    "beats": [
+      {"role": "hook", "voiceover": "Lambayı duvardan uzaklaştır, dalgalar büyür.", "on_screen": "Uzaklaştır: dalgalar büyür", "image_index": 0, "duration": 3.0, "motion": "zoom_in"},
+      {"role": "body", "voiceover": "Desen mesafeye göre açılıyor.", "on_screen": "Mesafeye göre açılıyor", "image_index": 1, "duration": 4.0, "motion": "pan_left"},
+      {"role": "body", "voiceover": "Duvara aynı dalgayı tekrarlayan bir gölge bırakıyor.", "on_screen": "Tekrarlayan gölge", "image_index": 3, "duration": 5.0, "motion": "zoom_out"},
+      {"role": "body", "voiceover": "Desenin adı Seigaiha, Japon dalga motifi.", "on_screen": "Adı: Seigaiha", "image_index": 2, "duration": 4.5, "motion": "zoom_in"},
+      {"role": "cta", "voiceover": "Duvarın hangi mesafede daha iyi görünürdü?", "on_screen": "Kumiko Serisi", "image_index": 0, "duration": 3.0, "motion": "static"}
+    ],
+    "caption": "Seigaiha duvara aynı dalgayı tekrarlayan bir gölge bırakıyor ve desen mesafeye göre açılıyor: uzaklaştırdıkça dalgalar büyüyor. 21 cm boyunda, komodin ve okuma köşesi ölçüsünde. Siz hangi mesafeyi seçerdiniz?",
+    "hashtags": ["kapyacraft", "seigaiha", "golgeoyunu", "masalambasi", "dekoratifaydinlatma"],
+    "notes": "Behaviour-first hook. The wall shadow is the brand's least copyable asset but no photo shows it — this variant would be far stronger with one dark-room frame."
+  },
+  {
+    "fmt": "motif",
+    "beats": [
+      {"role": "hook", "voiceover": "Bu desen bin beş yüz yıldır aynı.", "on_screen": "1500 yıldır aynı", "image_index": 3, "duration": 3.0, "motion": "zoom_in"},
+      {"role": "body", "voiceover": "Altıncı yüzyıldan beri kumaşta ve seramikte tekrarlanıyor.", "on_screen": "Kumaşta, seramikte, ahşapta", "image_index": 2, "duration": 4.8, "motion": "pan_right"},
+      {"role": "body", "voiceover": "Burada ahşap kafes olarak gövdeyi sarıyor.", "on_screen": "Kafes halinde", "image_index": 0, "duration": 4.2, "motion": "zoom_out"},
+      {"role": "body", "voiceover": "21 santim. Komodin ve okuma köşesi ölçüsünde bir atmosfer lambası.", "on_screen": "21 cm, okuma köşesi", "image_index": 1, "duration": 5.0, "motion": "static"},
+      {"role": "cta", "voiceover": "Siparişten sonra İstanbul'da üretiliyor.", "on_screen": "Kumiko Serisi", "image_index": 3, "duration": 3.0, "motion": "zoom_out"}
+    ],
+    "caption": "Seigaiha altıncı yüzyıldan beri tekrarlanan bir dalga motifi. Kumaşta, seramikte ve ahşapta karşınıza çıkar; burada kafes halinde gövdeyi sarıyor. 21 cm boyunda, siparişten sonra İstanbul'daki atölyede üretiliyor. Evinizde nereye koyardınız?",
+    "hashtags": ["kapyacraft", "seigaiha", "kumiko", "elyapimi", "masalambasi"],
+    "notes": "History-first hook, leads with the age of the motif. Opens on the photo the other two variants use least."
+  }
+]
