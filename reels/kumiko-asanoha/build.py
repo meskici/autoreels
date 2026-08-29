@@ -7,41 +7,9 @@ That is the hemp-leaf figure the motif is named for, and constructing it is
 the only way to guarantee the brand's one non-negotiable - that the motif
 comes out right.
 """
-import math, pathlib
-
-W, H = 1080, 1920
-CREAM, INK, GOLD, RUST = "#ede6d8", "#2a2520", "#c9a24b", "#a53324"
-S = 56.0                                   # lattice edge, viewBox units
-
-def lattice_paths(side, x0, x1, y0, y1):
-    """Asanoha over a rectangle: lattice edges + centroid arms per triangle."""
-    def pt(q, r):
-        return (side * (q + r / 2.0), side * math.sqrt(3) / 2.0 * r)
-    NB = [(1, 0), (0, 1), (-1, 1), (-1, 0), (0, -1), (1, -1)]
-    h = side * math.sqrt(3) / 2.0
-    rlo, rhi = int(y0 / h) - 2, int(y1 / h) + 3
-    seen, out = set(), []
-    def add(p, q):
-        k = (round(p[0], 2), round(p[1], 2), round(q[0], 2), round(q[1], 2))
-        if (k[2], k[3], k[0], k[1]) in seen or k in seen:
-            return
-        seen.add(k)
-        out.append(k)
-    for r in range(rlo, rhi):
-        qlo = int((x0 - side * r / 2.0) / side) - 2
-        qhi = int((x1 - side * r / 2.0) / side) + 3
-        for q in range(qlo, qhi):
-            C = pt(q, r)
-            for (dq, dr) in NB[:3]:
-                add(C, pt(q + dq, r + dr))
-            for (a, b) in ((NB[0], NB[1]), (NB[1], NB[2])):
-                A, B = pt(q + a[0], r + a[1]), pt(q + b[0], r + b[1])
-                G = ((C[0] + A[0] + B[0]) / 3, (C[1] + A[1] + B[1]) / 3)
-                add(C, G); add(A, G); add(B, G)
-    return out
-
-def to_path_d(segs):
-    return " ".join(f"M{x1} {y1}L{x2} {y2}" for (x1, y1, x2, y2) in segs)
+import pathlib
+from asanoha import (W, H, CREAM, INK, GOLD, RUST, S,
+                     lattice_paths, to_path_d, one_star)
 
 # Lattice covering the lamp body generously.
 body = to_path_d(lattice_paths(S, 260, 820, 400, 1250))
@@ -49,20 +17,6 @@ body = to_path_d(lattice_paths(S, 260, 820, 400, 1250))
 wall = to_path_d(lattice_paths(S * 2.6, -700, 1800, -400, 2400))
 
 # One highlighted hemp-leaf star, for the beat that names the motif.
-def one_star(side, cx, cy):
-    NB = [(1, 0), (0, 1), (-1, 1), (-1, 0), (0, -1), (1, -1)]
-    def pt(q, r):
-        return (cx + side * (q + r / 2.0), cy + side * math.sqrt(3) / 2.0 * r)
-    segs = []
-    C = pt(0, 0)
-    for k in range(6):
-        a, b = NB[k], NB[(k + 1) % 6]
-        A, B = pt(*a), pt(*b)
-        G = ((C[0] + A[0] + B[0]) / 3, (C[1] + A[1] + B[1]) / 3)
-        segs += [(C[0], C[1], G[0], G[1]), (A[0], A[1], G[0], G[1]),
-                 (B[0], B[1], G[0], G[1]), (C[0], C[1], A[0], A[1])]
-    return to_path_d(segs)
-
 star = one_star(S, 540, 960)
 
 # Y21 x G11 x D11 cm (product spec). Straight-sided square-section column,

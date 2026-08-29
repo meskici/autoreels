@@ -1,0 +1,93 @@
+name: Render the HyperFrames reel
+
+# The Kumiko.Asanoha reel, rendered from the real product photography.
+#
+# This exists because the photos are the point and they are not always
+# reachable. cdn.shopify.com is blocked from some environments, so the version
+# built there falls back to a drawn lamp. A GitHub runner reaches the CDN, so
+# here the real frames are used and no product photo is invented.
+#
+# No secrets. The image URLs are public CDN links already committed in
+# examples/catalog/, so nothing needs a Shopify token.
+#
+# It runs on push because a workflow_dispatch button only appears once the
+# workflow file is on the default branch. Merge it there and the button shows up.
+
+on:
+  push:
+    branches: ['**']
+    paths:
+      - 'reels/**'
+      - '.github/workflows/hyperframes-reel.yml'
+  workflow_dispatch:
+    inputs:
+      product:
+        description: Product handle (must exist in examples/catalog/)
+        type: string
+        required: true
+        default: kumiko-asanoha
+
+permissions:
+  contents: read
+
+jobs:
+  render:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    defaults:
+      run:
+        working-directory: reels/kumiko-asanoha
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Install FFmpeg
+        run: |
+          if ! command -v ffmpeg >/dev/null; then
+            sudo apt-get update -qq
+            sudo DEBIAN_FRONTEND=noninteractive apt-get install -y -qq ffmpeg
+          fi
+          ffmpeg -version | head -1
+          ffprobe -version | head -1
+
+      - name: Install Chrome Headless Shell
+        run: npx --yes hyperframes@0.8.17 browser ensure
+
+      - name: Fetch the real product photos
+        run: python3 fetch_photos.py "${{ inputs.product || 'kumiko-asanoha' }}"
+
+      - name: Build the photo cut
+        run: python3 build_photos.py
+
+      # Blocking. It passes clean against placeholder frames, so anything it
+      # reports here is caused by the real photography - a crop that overflows
+      # or text that loses contrast over a bright frame - and that is worth
+      # knowing before the video ships, not after.
+      - name: Check
+        run: npx --yes hyperframes@0.8.17 check
+
+      - name: Render
+        run: npx --yes hyperframes@0.8.17 render -o kumiko-asanoha-photo.mp4
+
+      - name: Contact sheet for review
+        continue-on-error: true
+        run: npx --yes hyperframes@0.8.17 snapshot --at 1.5,5.5,9.5,13.5,17.5
+
+      - name: Report
+        run: |
+          ls -la kumiko-asanoha-photo.mp4
+          ffprobe -v error -show_entries format=duration,size:stream=width,height,codec_name \
+            -of default=noprint_wrappers=1 kumiko-asanoha-photo.mp4
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: kumiko-asanoha-reel
+          path: |
+            reels/kumiko-asanoha/kumiko-asanoha-photo.mp4
+            reels/kumiko-asanoha/snapshots/
+            reels/kumiko-asanoha/index.html
+          if-no-files-found: error
+          retention-days: 30
