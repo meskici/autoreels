@@ -126,6 +126,7 @@ def run(
         board.logo_position = identity.get("logo_position", "top-left")
         board.logo_width_pct = int(identity.get("logo_width_pct", 26))
         board.logo_opacity = float(identity.get("logo_opacity", 0.85))
+        board.logo_shadow = bool(identity.get("logo_shadow", True))
         result.boards.append(board)
         summary = storyboard_stage.summarise(board, item)
         say(

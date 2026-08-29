@@ -92,5 +92,6 @@ def render(
         logo_position=board.logo_position,
         logo_width_pct=board.logo_width_pct,
         logo_opacity=board.logo_opacity,
+        logo_shadow=board.logo_shadow,
         canvas_width=board.width,
     )

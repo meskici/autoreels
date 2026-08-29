@@ -154,6 +154,7 @@ class Storyboard(JsonMixin):
     logo_position: str = "top-left"
     logo_width_pct: int = 26
     logo_opacity: float = 0.85
+    logo_shadow: bool = True
 
     @classmethod
     def from_dict(cls, data: dict[str, Any]) -> "Storyboard":

@@ -219,20 +219,43 @@ def logo_overlay_chain(
     position: str,
     width_pct: int,
     opacity: float,
+    shadow: bool = True,
 ) -> list[str]:
-    """Scale the brand mark, fade it back, and pin it to a corner.
+    """Scale the brand mark, drop a soft shadow behind it, pin it to a corner.
+
+    The shadow is the point. A cream logo over a cream wall or a lit wooden
+    table disappears, and a brand mark nobody can see is the same as no brand
+    mark. A blurred dark copy underneath makes it read on any frame without
+    turning it into a hard badge.
 
     Kept off the caption band: the logo sits at the top by default because the
     captions own the lower third.
     """
     logo_w = max(int(canvas_width * width_pct / 100), 40)
     margin = max(int(canvas_width * 0.055), 24)
+    blur = max(int(canvas_width * 0.014), 6)
+    drop = max(int(canvas_width * 0.003), 2)
+    alpha = max(min(opacity, 1.0), 0.0)
     x_expr, y_expr = LOGO_ANCHORS.get(position, LOGO_ANCHORS["top-left"])
+    x, y = x_expr.format(m=margin), y_expr.format(m=margin)
+
+    if not shadow:
+        return [
+            f"[{logo_stream}]scale={logo_w}:-1,format=rgba,"
+            f"colorchannelmixer=aa={alpha:.3f}[logo]",
+            f"[{label_in}][logo]overlay=x={x}:y={y}:format=auto[{label_out}]",
+        ]
+
     return [
         f"[{logo_stream}]scale={logo_w}:-1,format=rgba,"
-        f"colorchannelmixer=aa={max(min(opacity, 1.0), 0.0):.3f}[logo]",
-        f"[{label_in}][logo]overlay=x={x_expr.format(m=margin)}:y={y_expr.format(m=margin)}"
-        f":format=auto[{label_out}]",
+        f"colorchannelmixer=aa={alpha:.3f},split=2[logomark][logosrc]",
+        f"[logosrc]colorchannelmixer=rr=0:rg=0:rb=0:gr=0:gg=0:gb=0:br=0:bg=0:bb=0"
+        f",boxblur={blur}:1,colorchannelmixer=aa=0.95,split=2[logoshadow][logoshadow2]",
+        # Two passes of the same soft shadow: one is too thin to lift a cream
+        # mark off a cream wall, which is the frame this brand shoots most.
+        f"[{label_in}][logoshadow]overlay=x={x}+{drop}:y={y}+{drop}:format=auto[logobed1]",
+        f"[logobed1][logoshadow2]overlay=x={x}+{drop}:y={y}+{drop}:format=auto[logobed]",
+        f"[logobed][logomark]overlay=x={x}:y={y}:format=auto[{label_out}]",
     ]
 
 
@@ -251,6 +274,7 @@ def finalise(
     logo_position: str = "top-left",
     logo_width_pct: int = 26,
     logo_opacity: float = 0.85,
+    logo_shadow: bool = True,
     canvas_width: int = 1080,
 ) -> str:
     """Burn captions and the brand mark, mix voice and music, write the file."""
@@ -279,7 +303,7 @@ def finalise(
         chains += logo_overlay_chain(
             "base", f"{logo_index}:v", "v",
             canvas_width=canvas_width, position=logo_position,
-            width_pct=logo_width_pct, opacity=logo_opacity,
+            width_pct=logo_width_pct, opacity=logo_opacity, shadow=logo_shadow,
         )
     else:
         chains = [f"[0:v]{subs}[v]"]

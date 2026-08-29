@@ -92,10 +92,10 @@
     "avoid_reason": "Fine repeating lattice. Image-to-video models redraw it between frames and the motif comes out wrong, which is the one thing this brand cannot ship."
   },
   "identity": {
-    "logo_url": "https://cdn.shopify.com/s/files/1/0828/9697/8177/files/kapya-logo-cream.png?v=1783077987",
+    "logo_url": "https://cdn.shopify.com/s/files/1/0828/9697/8177/files/kapya-logo.png?v=1783077987",
     "logo_position": "top-left",
     "logo_width_pct": 26,
-    "logo_opacity": 0.82,
+    "logo_opacity": 0.9,
     "tagline": "Işık, katman katman.",
     "instagram": "kapya.craft",
     "caption_font": "Playfair Display",
@@ -114,8 +114,11 @@
     "notes": [
       "Fonts and colours read from the live Shopify theme (config/settings_data.json).",
       "The theme's body font is Assistant, which has no g-breve, I-dot or s-cedilla. It cannot spell Turkish, so captions use the heading font Playfair Display instead.",
-      "kapya-logo-cream.png is the cream cut, which holds on both lit and dark frames."
-    ]
+      "kapya-logo-cream.png is the cream cut, which holds on both lit and dark frames.",
+      "Every photo in the catalogue is a lit frame, so the ink logo is the default. The cream cut is kept for the dark-room footage the lights_off format needs; swap logo_url for logo_url_dark_frames when shooting that."
+    ],
+    "logo_shadow": false,
+    "logo_url_dark_frames": "https://cdn.shopify.com/s/files/1/0828/9697/8177/files/kapya-logo-cream.png?v=1783077987"
   },
   "copy_smells": [
     "Ending every variant on a question. One question across a set of three, at most.",
