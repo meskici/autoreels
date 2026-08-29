@@ -1,21 +1,28 @@
 #!/usr/bin/env python3
-"""The photo cut: the same 20s script over the real product photography.
+"""The Kumiko reel, written to the motif the photographs actually show.
 
-Differs from build.py in two ways that matter.
+The product description says asanoha - a six-armed star from the hemp leaf -
+and the photographs do not show that. The panel is a square grid carrying a
+fan along the top, a nested-square figure down one column and a diamond
+lattice through the field. So the prose description is not used as a source
+here. Every line traces to one of two things that can be checked: the
+structured spec on the listing, or the photographs themselves.
 
-Photos replace the drawn lamp entirely. The drawn lamp exists only because this
-container cannot reach the Shopify CDN; where the real frames are available
-they win, every time.
+Two claims from the old copy are gone for the same reason.
 
-The synthetic cast-wall pattern is gone. The brand profile is explicit - "the
-wall pattern is the strongest and least copyable asset. Prefer real footage of
-the lit lamp over any generated visual" - and no photo in the catalogue shows
-the pattern on a wall. Faking it here would be inventing the one asset the
-brand sells. Beat 4 runs the copy over the real lit frame instead, and
-SHOT_NOTES records the photograph that would make this beat land.
+The motif is no longer named. The lamp is sold as "Kumiko.Asanoha" but nothing
+on it is asanoha, so the video describes what is visible instead of repeating
+a name the object contradicts.
+
+The wall pattern is gone. The cells are backed by a white diffuser, which
+spreads light rather than throwing a figure, and no photograph shows a pattern
+cast on anything. The brand profile already makes this call for another
+product - "Plise diffuses light rather than throwing a pattern. Never write
+wall-pattern copy for it" - and it applies here on the same evidence.
 """
 import json, pathlib, sys
-from asanoha import W, H, CREAM, INK, GOLD, S, one_star
+W, H = 1080, 1920
+CREAM, INK, GOLD = "#ede6d8", "#2a2520", "#c9a24b"
 
 HERE = pathlib.Path(__file__).parent
 ASSETS = HERE / "assets"
@@ -24,38 +31,39 @@ ASSETS = HERE / "assets"
 # CSS object-position of the cover crop - the one knob to turn if a shot
 # frames badly, since the 6000x4000 originals crop hard to 9:16.
 SHOTS = [
-    dict(file="DSC02133.jpg",  t=0.00, pos="50% 50%", z0=1.18, z1=1.06,
+    dict(file="DSC02133.jpg",  t=0.00, dur=4.70, pos="50% 50%", z0=1.18, z1=1.06,
          why="ışıkla dolan kafes deseni, yakın plan — the macro open"),
-    dict(file="asanoha-4.jpg", t=3.95, pos="50% 45%", z0=1.04, z1=1.13,
-         why="yanık halde: desen detayı — naming the motif"),
-    dict(file="DSC02126.jpg",  t=7.75, pos="50% 50%", z0=1.16, z1=1.04,
+    dict(file="asanoha-4.jpg", t=3.95, dur=4.55, pos="50% 45%", z0=1.04, z1=1.13,
+         why="yanık halde: desen detayı — the figures, close"),
+    dict(file="DSC02126.jpg",  t=7.75, dur=4.95, pos="50% 50%", z0=1.16, z1=1.04,
          why="yemek masasında yanık halde — the pull back to the whole lamp"),
-    dict(file="DSC02122.jpg",  t=11.95, pos="50% 50%", z0=1.04, z1=1.12,
-         why="yandan görünüm, yanık kafes gövde — what the light does"),
+    dict(file="DSC02122.jpg",  t=11.95, dur=5.15, pos="50% 50%", z0=1.04, z1=1.12,
+         why="yandan görünüm, yanık kafes gövde — the light in a room"),
     dict(file="Product_Staging-1efb1cf3-aada-4e9a-a96b-6f6bc59da6a2.jpg",
-         t=16.35, pos="50% 45%", z0=1.10, z1=1.02,
+         t=16.35, dur=3.65, pos="50% 45%", z0=1.10, z1=1.02,
          why="asanoha desenli el yapımı masa lambası — the close"),
 ]
 
-SHOT_NOTES = """Beat 4 says the light carries the pattern to the wall, and no
-photograph in the catalogue shows that. One phone shot - lamp lit, a metre off
-a plain wall, room dark - would give this beat its own frame and would be the
-single highest-value addition to the shoot."""
+SHOT_NOTES = """The listing contradicts its own photographs: it is titled
+Kumiko.Asanoha and its description explains the six-armed hemp-leaf star, but
+the lamp in all six images carries a fan, a nested square and a diamond
+lattice on a square grid. Nothing here can fix that - either the title and
+description belong to a different lamp, or this lamp is mis-named on the
+store. Until it is settled the video describes the object and never names the
+motif."""
 
 CAPS = [
-    ("c1",  0.45,  3.70, "Şuna bak.",                         "Altı kollu bir yıldız."),
-    ("c2",  4.15,  7.50, "Asanoha diyorlar.",                 "Kenevir yaprağından geliyor."),
-    ("c3",  8.05, 11.70, "Kumiko’nun en çok işlenen motifi.", "Geleneğinde çıtalar çivisiz birleşiyor."),
-    ("c4", 12.60, 16.10, "Işık kafesten geçerken deseni duvara taşıyor.", "Uzaklaştırdıkça gölge büyüyor, yumuşuyor."),
-    ("c5", 16.60, 19.70, "Kumiko Serisi.",                    "Seninki hangi duvara düşecek?"),
+    ("c1",  0.45,  3.70, "Şuna bak.",                     "Tek bir desen değil."),
+    ("c2",  4.15,  7.50, "Üstte yelpaze, ortada baklava.", "Hepsi aynı yüzde."),
+    ("c3",  8.05, 11.70, "Kumiko geleneğinde çıtalar kareyi dolduruyor.", "Desen oradan çıkıyor."),
+    ("c4", 12.60, 16.10, "İçinde 5 watt var, 2700 kelvin.", "Akşam ışığı bu, kitap için değil."),
+    ("c5", 16.60, 19.70, "Kumiko Serisi.",                 "21 santim. Nereye koyardın?"),
 ]
 
 def main():
     missing = [s["file"] for s in SHOTS if not (ASSETS / s["file"]).exists()]
     if missing:
         raise SystemExit("missing photos (run fetch_photos.py first): " + ", ".join(missing))
-
-    star = one_star(46, 90, 90)
 
     shots_html = "\n".join(
         f'      <div class="shot" id="s{i}"><img src="assets/{s["file"]}" alt=""'
@@ -68,7 +76,7 @@ def main():
         f'<p class="l2">{c[4]}</p></div>' for c in CAPS)
 
     kb = ",\n          ".join(
-        f'{{sel:"#s{i} img", t:{s["t"]}, z0:{s["z0"]}, z1:{s["z1"]}}}'
+        f'{{sel:"#s{i} img", t:{s["t"]}, dur:{s["dur"]}, z0:{s["z0"]}, z1:{s["z1"]}}}'
         for i, s in enumerate(SHOTS))
     capjs = ",\n          ".join(
         f'{{sel:"#{c[0]}", i:{c[1]}, o:{c[2]}}}' for c in CAPS)
@@ -78,7 +86,7 @@ def main():
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width={W}, height={H}" />
-    <title>Kumiko.Asanoha — motif (fotoğraflı kurgu)</title>
+    <title>Kumiko Serisi masa lambası — fotoğraflı kurgu</title>
     <script src="vendor/gsap.min.js"></script>
     <style>
       @font-face {{
@@ -112,26 +120,15 @@ def main():
       .cap p {{ margin: 0; text-align: left; letter-spacing: -0.005em; }}
       .cap .l1 {{ font-size: 62px; line-height: 1.15; color: {CREAM}; }}
       .cap .l2 {{ padding-top: 20px; font-size: 40px; line-height: 1.28; color: {GOLD}; }}
-      /* The constructed motif appears as a drawn annotation beside the copy,
-         never traced onto the photograph - it cannot be registered to a frame
-         this build cannot see, and a misaligned overlay would misrepresent it. */
-      #keymark {{ position: absolute; right: 88px; bottom: 452px; opacity: 0; }}
       #mark {{ position: absolute; left: 88px; bottom: 58px; opacity: 0; }}
       #mark .name {{ margin: 0; font-size: 34px; color: {CREAM}; letter-spacing: 0.02em; }}
       #mark .tag {{ margin: 6px 0 0; font-size: 26px; color: {GOLD}; }}
     </style>
   </head>
   <body>
-    <div id="root" data-composition-id="asanoha" data-start="0"
+    <div id="root" data-composition-id="kumiko" data-start="0"
          data-width="{W}" data-height="{H}" data-duration="20">
 {shots_html}
-
-      <svg id="keymark" width="180" height="180" viewBox="0 0 180 180"
-           xmlns="http://www.w3.org/2000/svg">
-        <g fill="none" stroke="{GOLD}" stroke-width="4" stroke-linecap="round">
-          <path d="{star}"/>
-        </g>
-      </svg>
 
       <div id="band"></div>
 {caps_html}
@@ -155,12 +152,8 @@ def main():
             {{ opacity: 1, duration: i === 0 ? 0.5 : 0.75, ease: "power2.inOut" }}, s.t);
           // Ken Burns: one slow continuous move per shot, no hold.
           tl.fromTo(s.sel, {{ scale: s.z0 }},
-            {{ scale: s.z1, duration: 5.4, ease: "none" }}, s.t);
+            {{ scale: s.z1, duration: s.dur, ease: "none" }}, s.t);
         }});
-
-        tl.fromTo("#keymark", {{ opacity: 0, y: 16 }},
-          {{ opacity: 0.95, y: 0, duration: 0.6, ease: "power3.out" }}, 4.4);
-        tl.to("#keymark", {{ opacity: 0, duration: 0.5, ease: "power2.in" }}, 7.2);
 
         const caps = [
           {capjs}
@@ -174,7 +167,7 @@ def main():
         tl.fromTo("#mark", {{ opacity: 0, y: 18 }},
           {{ opacity: 1, y: 0, duration: 0.7, ease: "power3.out" }}, 17.3);
 
-        window.__timelines["asanoha"] = tl;
+        window.__timelines["kumiko"] = tl;
       }}
       if (document.fonts && document.fonts.ready) {{
         document.fonts.ready.then(build);
