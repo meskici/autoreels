@@ -4,161 +4,161 @@
     "beats": [
       {
         "role": "hook",
-        "voiceover": "Bu bir krater.",
-        "on_screen": "Bir krater",
+        "voiceover": "Bu biçim kalıptan çıkamaz.",
+        "on_screen": "Kalıptan çıkamaz",
         "image_index": 0,
-        "duration": 2.2,
-        "motion": "zoom_in"
-      },
-      {
-        "role": "body",
-        "voiceover": "Kenarlarda yığılma, ortada boşluk.",
-        "on_screen": "Kenarda yığılma",
-        "image_index": 1,
-        "duration": 4.0,
-        "motion": "pan_right"
-      },
-      {
-        "role": "body",
-        "voiceover": "Göktaşı çarpmasından kalan zemini andırıyor.",
-        "on_screen": "Göktaşı zemini",
-        "image_index": 9,
-        "duration": 4.8,
-        "motion": "zoom_out"
-      },
-      {
-        "role": "body",
-        "voiceover": "Yanınca gölgeler çıkıntıları uzatıyor.",
-        "on_screen": "Gölgeler uzuyor",
-        "image_index": 2,
-        "duration": 4.6,
-        "motion": "pan_left"
-      },
-      {
-        "role": "cta",
-        "voiceover": "Adı Impact. Yarım kilo, yirmi yedi santim.",
-        "on_screen": "Impact",
-        "image_index": 3,
-        "duration": 3.4,
-        "motion": "zoom_out"
-      }
-    ],
-    "caption": "Kenarlarda yığılma, ortada boşluk. Göktaşı çarpmasından kalan zemini andırıyor. Impact yanınca gölgeler kraterin çıkıntılarını uzatıyor. Yarım kilo, yirmi yedi santim.",
-    "hashtags": [
-      "kapyacraft",
-      "impact",
-      "dekoratifaydinlatma",
-      "masalambasi",
-      "elyapimi"
-    ],
-    "notes": "Three-word opening on the thing itself. Ends on two numbers instead of a question."
-  },
-  {
-    "fmt": "motif",
-    "beats": [
-      {
-        "role": "hook",
-        "voiceover": "Kütlenin tam içinden bir silindir geçiyor.",
-        "on_screen": "İçinden geçiyor",
-        "image_index": 1,
         "duration": 2.6,
         "motion": "zoom_in"
       },
       {
         "role": "body",
-        "voiceover": "Işık iki ucundan birden çıkıyor.",
-        "on_screen": "İki uçtan ışık",
-        "image_index": 0,
-        "duration": 4.2,
-        "motion": "zoom_out"
+        "voiceover": "Kalıbı yok.",
+        "on_screen": "Kalıbı yok",
+        "image_index": 1,
+        "duration": 3.0,
+        "motion": "static"
       },
       {
         "role": "body",
-        "voiceover": "Gövde beyaz ve krater dokulu.",
-        "on_screen": "Krater dokusu",
+        "voiceover": "Kütlenin tam içinden bir silindir geçiyor.",
+        "on_screen": "İçinden geçiyor",
         "image_index": 9,
-        "duration": 4.4,
+        "duration": 4.8,
         "motion": "pan_right"
       },
       {
         "role": "body",
-        "voiceover": "Rafta kitapların yanında duruyor.",
-        "on_screen": "Rafta duruyor",
-        "image_index": 3,
-        "duration": 4.6,
-        "motion": "static"
+        "voiceover": "Işık iki ucundan birden çıkıyor.",
+        "on_screen": "İki uçtan ışık",
+        "image_index": 2,
+        "duration": 5.0,
+        "motion": "zoom_out"
       },
       {
         "role": "cta",
-        "voiceover": "Sende salonda mı dururdu, masada mı?",
+        "voiceover": "Adı Impact. Yirmi yedi santim.",
         "on_screen": "Impact",
-        "image_index": 2,
-        "duration": 3.4,
-        "motion": "zoom_out"
+        "image_index": 3,
+        "duration": 3.6,
+        "motion": "zoom_in"
       }
     ],
-    "caption": "Kütlenin tam içinden bir silindir geçiyor ve ışık iki ucundan birden çıkıyor. Beyaz, krater dokulu bir gövde. Yirmi yedi santim, rafta kitapların yanında duruyor. Sizde salonda mı dururdu, masada mı?",
+    "caption": "Bu biçimin kalıbı yok, çünkü kalıptan çıkması mümkün değil. Kütlenin tam içinden bir silindir geçiyor ve ışık iki ucundan birden çıkıyor. Impact, yirmi yedi santim.",
     "hashtags": [
       "kapyacraft",
       "impact",
       "heykelsilamba",
-      "masalambasi",
-      "tasarimlamba"
+      "dekoratifaydinlatma",
+      "masalambasi"
     ],
-    "notes": "Form-first hook. The single question in this set closes here."
+    "notes": "Curiosity hook from Hakkımızda: geometries a mould cannot release. Says nothing about how it is made."
   },
   {
     "fmt": "motif",
     "beats": [
       {
         "role": "hook",
-        "voiceover": "Aynı lamba. İki farklı taş.",
-        "on_screen": "İki farklı taş",
-        "image_index": 4,
-        "duration": 2.4,
+        "voiceover": "Günün çoğunda bu lamba kapalı.",
+        "on_screen": "Günün çoğu kapalı",
+        "image_index": 9,
+        "duration": 2.8,
         "motion": "zoom_in"
       },
       {
         "role": "body",
-        "voiceover": "Obsidyen siyahta doku daha derin okunuyor.",
-        "on_screen": "Obsidyen: derin",
-        "image_index": 5,
-        "duration": 4.6,
-        "motion": "zoom_out"
-      },
-      {
-        "role": "body",
-        "voiceover": "Beyazda yüzey ışığı dışarı yayıyor.",
-        "on_screen": "Beyaz: yayılan ışık",
-        "image_index": 0,
-        "duration": 4.4,
+        "voiceover": "Kapalıyken de beğenmen lazım.",
+        "on_screen": "Kapalıyken de bakacaksın",
+        "image_index": 3,
+        "duration": 4.0,
         "motion": "pan_left"
       },
       {
         "role": "body",
-        "voiceover": "İkisini de İstanbul'da, sipariş geldikten sonra üretiyoruz.",
-        "on_screen": "İstanbul'da üretiyoruz",
-        "image_index": 6,
-        "duration": 4.8,
-        "motion": "pan_right"
+        "voiceover": "Kapalıyken krater.",
+        "on_screen": "Kapalıyken: krater",
+        "image_index": 1,
+        "duration": 3.6,
+        "motion": "zoom_out"
+      },
+      {
+        "role": "body",
+        "voiceover": "Yanınca gölgeler çıkıntıları uzatıyor.",
+        "on_screen": "Yanınca: gölge",
+        "image_index": 0,
+        "duration": 5.0,
+        "motion": "zoom_in"
       },
       {
         "role": "cta",
-        "voiceover": "Kutulamadan önce yakıp deniyoruz.",
+        "voiceover": "Yirmi yedi santim. Rafta durur.",
         "on_screen": "Impact",
-        "image_index": 7,
+        "image_index": 2,
+        "duration": 3.8,
+        "motion": "zoom_out"
+      }
+    ],
+    "caption": "Günün çoğunda bir masa lambası kapalı duruyor, o yüzden kapalıyken de beğenmen lazım. Impact kapalıyken krater dokulu bir kütle; yanınca gölgeler çıkıntıları uzatıyor. Yirmi yedi santim, rafta durur.",
+    "hashtags": [
+      "kapyacraft",
+      "impact",
+      "dekoratifobje",
+      "masalambasi",
+      "tasarimlamba"
+    ],
+    "notes": "Your lamp guide's third category, object-when-off, turned into the hook. Uses the unlit-looking frames properly."
+  },
+  {
+    "fmt": "motif",
+    "beats": [
+      {
+        "role": "hook",
+        "voiceover": "Bu markada tek kişi var.",
+        "on_screen": "Tek kişi",
+        "image_index": 3,
+        "duration": 2.6,
+        "motion": "zoom_in"
+      },
+      {
+        "role": "body",
+        "voiceover": "Tasarlayan da kutulayan da aynı kişi.",
+        "on_screen": "İkisi de aynı kişi",
+        "image_index": 6,
+        "duration": 4.6,
+        "motion": "pan_right"
+      },
+      {
+        "role": "body",
+        "voiceover": "Yazdığında cevap veren de o.",
+        "on_screen": "Cevap veren de o",
+        "image_index": 4,
+        "duration": 4.4,
+        "motion": "zoom_out"
+      },
+      {
+        "role": "body",
+        "voiceover": "Adı Mert. Atölye İstanbul'da.",
+        "on_screen": "Mert. İstanbul.",
+        "image_index": 0,
+        "duration": 5.0,
+        "motion": "static"
+      },
+      {
+        "role": "cta",
+        "voiceover": "Impact. Sipariş üzerine.",
+        "on_screen": "Impact",
+        "image_index": 2,
         "duration": 3.4,
         "motion": "zoom_out"
       }
     ],
-    "caption": "Impact beyaz ve obsidyen siyah. Siyahta krater dokusu daha derin okunuyor, beyazda yüzey ışığı dışarı yayıyor. İkisini de İstanbul'da, sipariş geldikten sonra üretiyoruz ve kutulamadan önce yakıp deniyoruz.",
+    "caption": "Kapya.Craft'ta tek kişi var. Tasarlayan da kutulayan da aynı kişi, support@kapyacraft.com adresine yazdığında cevap veren de o. Adı Mert, atölye İstanbul'da. Impact, sipariş üzerine.",
     "hashtags": [
       "kapyacraft",
       "impact",
-      "obsidyen",
-      "elyapimi",
+      "tekkisi",
+      "istanbul",
       "masalambasi"
     ],
-    "notes": "First person plural puts the workshop in the frame. No question; the last line is what the maker does."
+    "notes": "Straight from Hakkımızda. A one-person brand is a real differentiator against Trendyol resellers and it costs nothing to say."
   }
 ]

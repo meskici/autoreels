@@ -2,163 +2,40 @@
   {
     "fmt": "motif",
     "beats": [
-      {
-        "role": "hook",
-        "voiceover": "Duvardaki şu dalga.",
-        "on_screen": "Şu dalga",
-        "image_index": 2,
-        "duration": 2.2,
-        "motion": "zoom_in"
-      },
-      {
-        "role": "body",
-        "voiceover": "Adı Seigaiha. Japoncada mavi deniz dalgası demek.",
-        "on_screen": "Seigaiha",
-        "image_index": 0,
-        "duration": 4.6,
-        "motion": "zoom_out"
-      },
-      {
-        "role": "body",
-        "voiceover": "Altıncı yüzyıldan beri aynı şekilde çiziyorlar.",
-        "on_screen": "6. yüzyıldan beri",
-        "image_index": 3,
-        "duration": 4.4,
-        "motion": "pan_right"
-      },
-      {
-        "role": "body",
-        "voiceover": "Kafesten geçen ışık onu duvara taşıyor.",
-        "on_screen": "Işık duvara taşıyor",
-        "image_index": 1,
-        "duration": 4.4,
-        "motion": "zoom_in"
-      },
-      {
-        "role": "cta",
-        "voiceover": "Kumiko serisinden. Sende hangi desen dururdu?",
-        "on_screen": "Kumiko Serisi",
-        "image_index": 0,
-        "duration": 3.4,
-        "motion": "zoom_out"
-      }
+      {"role": "hook", "voiceover": "Çoğu insan atmosfer ışığı arıyor.", "on_screen": "Atmosfer ışığı arıyorsun", "image_index": 2, "duration": 2.6, "motion": "zoom_in"},
+      {"role": "body", "voiceover": "Ama okuma lambası alıyor.", "on_screen": "Okuma lambası alıyorsun", "image_index": 0, "duration": 3.4, "motion": "zoom_out"},
+      {"role": "body", "voiceover": "Sonra 'fazla parlak' diye şikâyet ediyor.", "on_screen": "Sonra: fazla parlak", "image_index": 3, "duration": 4.6, "motion": "pan_right"},
+      {"role": "body", "voiceover": "Seigaiha akşam için tasarlandı. Kitap okutmaz.", "on_screen": "Bu akşam için", "image_index": 1, "duration": 5.2, "motion": "zoom_in"},
+      {"role": "cta", "voiceover": "Kumiko serisinden. Yirmi bir santim.", "on_screen": "Kumiko Serisi", "image_index": 0, "duration": 3.4, "motion": "zoom_out"}
     ],
-    "caption": "Duvardaki dalganın adı Seigaiha. Japoncada mavi deniz dalgası demek, altıncı yüzyıldan beri aynı şekilde çiziyorlar. Kafesten geçen ışık onu duvara taşıyor. Sende hangi desen dururdu?",
-    "hashtags": [
-      "kapyacraft",
-      "seigaiha",
-      "kumiko",
-      "dekoratifaydinlatma",
-      "masalambasi"
-    ],
-    "notes": "Opens on what the viewer sees, not the product name. The only question in the set closes this one."
+    "caption": "Çoğu insan atmosfer ışığı arıyor ama okuma lambası alıyor, sonra 'fazla parlak' diye şikâyet ediyor. Seigaiha akşam ışığı için tasarlandı; kitap okumaya yetecek parlaklığı yok. Yirmi bir santim, komodin boyu.",
+    "hashtags": ["kapyacraft", "seigaiha", "kumiko", "dekoratifaydinlatma", "masalambasi"],
+    "notes": "Hook is the buying mistake from your own lamp guide. Names the objection before the viewer does."
   },
   {
     "fmt": "motif",
     "beats": [
-      {
-        "role": "hook",
-        "voiceover": "Lambayı duvardan uzaklaştır.",
-        "on_screen": "Uzaklaştır",
-        "image_index": 0,
-        "duration": 2.2,
-        "motion": "zoom_in"
-      },
-      {
-        "role": "body",
-        "voiceover": "Dalgalar büyüyor, kenarları yumuşuyor.",
-        "on_screen": "Dalgalar büyüyor",
-        "image_index": 1,
-        "duration": 4.0,
-        "motion": "pan_left"
-      },
-      {
-        "role": "body",
-        "voiceover": "Yaklaştır. Desen keskinleşiyor.",
-        "on_screen": "Yaklaştır: keskinleşiyor",
-        "image_index": 3,
-        "duration": 4.4,
-        "motion": "zoom_out"
-      },
-      {
-        "role": "body",
-        "voiceover": "Tek lamba, iki farklı duvar.",
-        "on_screen": "Tek lamba, iki duvar",
-        "image_index": 2,
-        "duration": 4.6,
-        "motion": "zoom_in"
-      },
-      {
-        "role": "cta",
-        "voiceover": "Mesafeyi sen ayarlıyorsun.",
-        "on_screen": "Kumiko Serisi",
-        "image_index": 0,
-        "duration": 3.4,
-        "motion": "static"
-      }
+      {"role": "hook", "voiceover": "Odanı hastane gibi gösteren lamba değil.", "on_screen": "Suçlu lamba değil", "image_index": 0, "duration": 2.8, "motion": "zoom_in"},
+      {"role": "body", "voiceover": "Ampul.", "on_screen": "Ampul", "image_index": 3, "duration": 2.4, "motion": "static"},
+      {"role": "body", "voiceover": "4000K bir ampul bütün odayı soğutur.", "on_screen": "4000K = hastane", "image_index": 2, "duration": 4.8, "motion": "pan_left"},
+      {"role": "body", "voiceover": "Bunun kutusundan 2700K çıkıyor. Sıcak beyaz.", "on_screen": "Kutuda 2700K var", "image_index": 1, "duration": 5.2, "motion": "zoom_out"},
+      {"role": "cta", "voiceover": "Seigaiha. Kumiko serisinden.", "on_screen": "Kumiko Serisi", "image_index": 0, "duration": 3.4, "motion": "zoom_in"}
     ],
-    "caption": "Seigaiha'yı duvardan uzaklaştırdıkça dalgalar büyüyüp yumuşuyor, yaklaştırdıkça keskinleşiyor. Tek lamba, iki farklı duvar. Mesafeyi siz ayarlıyorsunuz.",
-    "hashtags": [
-      "kapyacraft",
-      "seigaiha",
-      "golgeoyunu",
-      "masalambasi",
-      "dekoratifaydinlatma"
-    ],
-    "notes": "Imperative opening, no question. Talks about the wall shadow that none of the four photos actually show."
+    "caption": "Odanı hastane gibi gösteren şey lamba değil, ampul. 4000K bütün odayı soğutur. Kapya.Craft lambalarının kutusundan 2700K sıcak beyaz LED çıkıyor, takılı gelmiş halde. Seigaiha, Kumiko serisinden.",
+    "hashtags": ["kapyacraft", "seigaiha", "2700k", "dekoratifaydinlatma", "masalambasi"],
+    "notes": "Teaches the mistake from your bulb guide, then answers it with something you already include. One-word second beat is the whole rhythm."
   },
   {
     "fmt": "motif",
     "beats": [
-      {
-        "role": "hook",
-        "voiceover": "Bu lambayla kitap okuyamazsın.",
-        "on_screen": "Kitap okuyamazsın",
-        "image_index": 3,
-        "duration": 2.6,
-        "motion": "zoom_in"
-      },
-      {
-        "role": "body",
-        "voiceover": "Öyle tasarlanmadı.",
-        "on_screen": "Öyle tasarlanmadı",
-        "image_index": 2,
-        "duration": 3.0,
-        "motion": "zoom_out"
-      },
-      {
-        "role": "body",
-        "voiceover": "Akşam ışığı için tasarlandı.",
-        "on_screen": "Akşam ışığı",
-        "image_index": 0,
-        "duration": 4.6,
-        "motion": "pan_right"
-      },
-      {
-        "role": "body",
-        "voiceover": "Yirmi bir santim. Komodinde durur.",
-        "on_screen": "21 cm",
-        "image_index": 1,
-        "duration": 5.2,
-        "motion": "static"
-      },
-      {
-        "role": "cta",
-        "voiceover": "Seigaiha. Kumiko serisinden.",
-        "on_screen": "Kumiko Serisi",
-        "image_index": 3,
-        "duration": 3.6,
-        "motion": "zoom_out"
-      }
+      {"role": "hook", "voiceover": "Bu lamba sana gelmeden önce yandı.", "on_screen": "Sana gelmeden önce yandı", "image_index": 1, "duration": 2.8, "motion": "zoom_in"},
+      {"role": "body", "voiceover": "Gölgesi bir duvara düşürüldü.", "on_screen": "Gölgesi duvara düştü", "image_index": 0, "duration": 4.2, "motion": "zoom_out"},
+      {"role": "body", "voiceover": "Sonra kutulandı.", "on_screen": "Sonra kutulandı", "image_index": 3, "duration": 3.2, "motion": "pan_right"},
+      {"role": "body", "voiceover": "Depoda bekleyen lamba yok. Seninki siparişinle başlıyor.", "on_screen": "Depoda bekleyen yok", "image_index": 2, "duration": 5.4, "motion": "static"},
+      {"role": "cta", "voiceover": "Seigaiha. İstanbul'da.", "on_screen": "Kumiko Serisi", "image_index": 1, "duration": 3.4, "motion": "zoom_out"}
     ],
-    "caption": "Bu lambayla kitap okuyamazsın. Öyle tasarlanmadı, akşam ışığı için tasarlandı. Yirmi bir santim, komodin boyu. Seigaiha, Kumiko serisinden.",
-    "hashtags": [
-      "kapyacraft",
-      "seigaiha",
-      "kumiko",
-      "masalambasi",
-      "dekoratifaydinlatma"
-    ],
-    "notes": "Leads with what the lamp cannot do, which no competitor writes. Carries no claim about how anything is made."
+    "caption": "Her lamba kutulanmadan önce yakılıyor ve gölgesi bir duvara düşürülüyor. Depoda satılmayı bekleyen ürün yok; seninki siparişinle birlikte başlıyor. Seigaiha, İstanbul'da.",
+    "hashtags": ["kapyacraft", "seigaiha", "kumiko", "siparisuzerine", "masalambasi"],
+    "notes": "Straight from Hakkımızda. The pre-boxing light test is a detail no competitor can copy and none of them mention."
   }
 ]
