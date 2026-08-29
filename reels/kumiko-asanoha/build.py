@@ -44,7 +44,7 @@ def to_path_d(segs):
     return " ".join(f"M{x1} {y1}L{x2} {y2}" for (x1, y1, x2, y2) in segs)
 
 # Lattice covering the lamp body generously.
-body = to_path_d(lattice_paths(S, 280, 800, 420, 1240))
+body = to_path_d(lattice_paths(S, 260, 820, 400, 1250))
 # A coarser lattice for the cast wall pattern.
 wall = to_path_d(lattice_paths(S * 2.6, -700, 1800, -400, 2400))
 
@@ -65,8 +65,16 @@ def one_star(side, cx, cy):
 
 star = one_star(S, 540, 960)
 
-LAMP = ("M350 1182 L390 522 Q392 480 434 480 L646 480 Q688 480 690 522 "
-        "L730 1182 Z")
+# Y21 x G11 x D11 cm (product spec). Straight-sided square-section column,
+# not a tapered shade. 400px = 11cm across the front face, so 1cm = 36.4px;
+# the body reads 19.0cm tall and the wood-look base takes the remaining 2.0cm.
+# The right-hand panel is the same face foreshortened, which is what makes it
+# read as a box rather than a flat screen.
+FACE = "M318 440 L718 440 L718 1131 L318 1131 Z"
+SIDE = "M718 440 L762 419 L762 1110 L718 1131 Z"
+TOP    = "M318 440 L362 419 L762 419 L718 440 Z"
+BASE_F = "M274 1131 L722 1131 L722 1199 L274 1199 Z"
+BASE_S = "M722 1131 L766 1110 L766 1178 L722 1199 Z"
 
 CAPS = [
     # (id, start, out, line1, line2, phase)
@@ -117,7 +125,7 @@ HTML = f"""<!doctype html>
           rgba(201,162,75,0.95) 0%, rgba(201,162,75,0.45) 42%,
           rgba(201,162,75,0.10) 70%, rgba(201,162,75,0) 100%);
         width: 1500px; height: 1500px;
-        left: -210px; top: 220px;
+        left: -232px; top: 42px;
         inset: auto;
         opacity: 0;
       }}
@@ -183,10 +191,21 @@ HTML = f"""<!doctype html>
       <div class="layer" id="lampwrap">
         <svg viewBox="0 0 {W} {H}" xmlns="http://www.w3.org/2000/svg">
           <defs>
-            <clipPath id="lampclip"><path d="{LAMP}"/></clipPath>
+            <clipPath id="faceclip"><path d="{FACE}"/></clipPath>
+            <clipPath id="sideclip"><path d="{SIDE}"/></clipPath>
           </defs>
-          <g clip-path="url(#lampclip)">
-            <rect id="shade" x="280" y="420" width="560" height="840" fill="{CREAM}"/>
+
+          <g clip-path="url(#sideclip)">
+            <rect id="shadeside" x="700" y="400" width="120" height="760" fill="#ded5c3"/>
+            <g id="lattside" fill="none" stroke="{INK}" stroke-width="7"
+               stroke-linecap="round" opacity="0.55"
+               transform="translate(718,0) scale(0.31,1) translate(-718,0)">
+              <path d="{body}"/>
+            </g>
+          </g>
+
+          <g clip-path="url(#faceclip)">
+            <rect id="shade" x="300" y="400" width="440" height="760" fill="{CREAM}"/>
             <g id="latt" fill="none" stroke="{INK}" stroke-width="3.2"
                stroke-linecap="round">
               <path d="{body}"/>
@@ -196,11 +215,18 @@ HTML = f"""<!doctype html>
               <path d="{star}"/>
             </g>
           </g>
-          <path id="outline" d="{LAMP}" fill="none" stroke="{INK}"
-                stroke-width="6" stroke-linejoin="round"/>
+
+          <path id="captop" d="{TOP}" fill="#cfc5b1" stroke="{INK}"
+                stroke-width="5" stroke-linejoin="round"/>
+
+          <path id="outline" d="{FACE}" fill="none" stroke="{INK}"
+                stroke-width="5" stroke-linejoin="round"/>
+          <path id="outlineside" d="{SIDE}" fill="none" stroke="{INK}"
+                stroke-width="5" stroke-linejoin="round"/>
+
           <g id="base" opacity="0">
-            <rect x="418" y="1182" width="244" height="46" rx="7" fill="{INK}"/>
-            <rect x="386" y="1228" width="308" height="18" rx="9" fill="{INK}"/>
+            <path id="basefront" d="{BASE_F}" fill="#8a6a45"/>
+            <path id="baseside"  d="{BASE_S}" fill="#6b5134"/>
           </g>
         </svg>
       </div>
@@ -239,9 +265,14 @@ HTML = f"""<!doctype html>
         // --- lights off in the room, light on in the lamp ----------------
         tl.to("#bg", {{ backgroundColor: "{INK}", duration: 0.65, ease: "power2.in" }}, 11.55);
         tl.to("#shade", {{ attr: {{ fill: "#3a2f1f" }}, duration: 0.65, ease: "power2.in" }}, 11.55);
+        tl.to("#shadeside", {{ attr: {{ fill: "#241c12" }}, duration: 0.65, ease: "power2.in" }}, 11.55);
+        tl.to("#captop", {{ attr: {{ fill: "#2b2318", stroke: "#9a7a38" }}, duration: 0.65, ease: "power2.in" }}, 11.55);
         tl.to("#latt", {{ attr: {{ stroke: "{GOLD}" }}, duration: 0.7, ease: "power2.out" }}, 11.75);
+        tl.to("#lattside", {{ attr: {{ stroke: "#9a7a38" }}, duration: 0.7, ease: "power2.out" }}, 11.75);
         tl.to("#outline", {{ attr: {{ stroke: "{GOLD}" }}, duration: 0.7, ease: "power2.out" }}, 11.75);
-        tl.to("#base rect", {{ attr: {{ fill: "#171310" }}, duration: 0.65 }}, 11.55);
+        tl.to("#outlineside", {{ attr: {{ stroke: "#9a7a38" }}, duration: 0.7, ease: "power2.out" }}, 11.75);
+        tl.to("#basefront", {{ attr: {{ fill: "#4a3922" }}, duration: 0.65 }}, 11.55);
+        tl.to("#baseside", {{ attr: {{ fill: "#3a2c1a" }}, duration: 0.65 }}, 11.55);
         tl.to("#glow", {{ opacity: 0.72, duration: 1.5, ease: "power2.out" }}, 11.85);
         tl.to("#glow", {{ opacity: 0.68, duration: 2.2, ease: "sine.inOut",
                           repeat: 2, yoyo: true }}, 14.0);
