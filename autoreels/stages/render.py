@@ -18,16 +18,27 @@ def render(board: Storyboard, config: Config, run_dir: str, dest: str) -> str:
     clips: list[str] = []
     for shot in board.shots:
         clip = os.path.join(work, f"clip{shot.index:02d}.mp4")
-        ffmpeg.render_clip(
-            binary,
-            shot.image_path,
-            clip,
-            duration=shot.duration,
-            motion=shot.motion,
-            width=board.width,
-            height=board.height,
-            fps=board.fps,
-        )
+        if shot.source_video and os.path.exists(shot.source_video):
+            ffmpeg.conform_clip(
+                binary,
+                shot.source_video,
+                clip,
+                duration=shot.duration,
+                width=board.width,
+                height=board.height,
+                fps=board.fps,
+            )
+        else:
+            ffmpeg.render_clip(
+                binary,
+                shot.image_path,
+                clip,
+                duration=shot.duration,
+                motion=shot.motion,
+                width=board.width,
+                height=board.height,
+                fps=board.fps,
+            )
         shot.clip_path = clip
         clips.append(clip)
 

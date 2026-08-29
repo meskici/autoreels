@@ -6,7 +6,18 @@
   "market": "Turkey",
   "positioning": "Handmade decorative table lamps at 2-3x the visible Turkish market price. The advantage is craft narrative and what the light does to a room. Never compete on price, discount, or spec.",
   "voice": "Conversational, short sentences, teaching tone. Closes on a question. No hard sell.",
-  "banned_words": ["en iyi", "lider", "1 numara", "#1", "kaçırma", "son fırsat", "indirim", "kampanya", "muhteşem", "mükemmel"],
+  "banned_words": [
+    "en iyi",
+    "lider",
+    "1 numara",
+    "#1",
+    "kaçırma",
+    "son fırsat",
+    "indirim",
+    "kampanya",
+    "muhteşem",
+    "mükemmel"
+  ],
   "copy_rules": [
     "Turkish by default. Every claim must trace to the product description.",
     "No invented history, materials, or dimensions.",
@@ -62,9 +73,22 @@
     }
   ],
   "cta": "Profildeki linkten inceleyebilirsin.",
-  "hashtag_seeds": ["kapyacraft", "dekoratifaydinlatma", "masalambasi", "elyapimi", "tasarimlamba"],
+  "hashtag_seeds": [
+    "kapyacraft",
+    "dekoratifaydinlatma",
+    "masalambasi",
+    "elyapimi",
+    "tasarimlamba"
+  ],
   "notes": [
     "Plise diffuses light rather than throwing a pattern. Never write wall-pattern copy for it.",
     "The wall pattern is the strongest and least copyable asset. Prefer real footage of the lit lamp over any generated visual."
-  ]
+  ],
+  "animation": {
+    "prompt_hint": "Warm 2700K lamp light glows and breathes very slightly. Nothing in the room moves except the light.",
+    "avoid_tags": [
+      "Kumiko Serisi"
+    ],
+    "avoid_reason": "Fine repeating lattice. Image-to-video models redraw it between frames and the motif comes out wrong, which is the one thing this brand cannot ship."
+  }
 }

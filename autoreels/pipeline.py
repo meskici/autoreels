@@ -25,7 +25,8 @@ from typing import Any
 from . import brand
 from .config import Config
 from .models import Product, Script, Storyboard
-from .providers import shopify, tts
+from .providers import shopify, tts, video
+from .stages import animate as animate_stage
 from .stages import render as render_stage
 from .stages import script as script_stage
 from .stages import storyboard as storyboard_stage
@@ -72,6 +73,7 @@ def run(
     fmt_id: str = "auto",
     variants: int = 1,
     music: str = "",
+    animate: str = "none",
     render: bool = True,
     run_dir: str = "",
     script_json: str = "",
@@ -116,7 +118,6 @@ def run(
     say(f"3/5 voiceover   provider={tts.available(config)}")
     for item in result.scripts:
         board = storyboard_stage.build(item, product, config, run_dir, music=music)
-        board.save(os.path.join(run_dir, f"storyboard-{item.variant}.json"))
         result.boards.append(board)
         summary = storyboard_stage.summarise(board, item)
         say(
@@ -124,6 +125,13 @@ def run(
             f"{summary['shots']} shots, {summary['distinct_images']} distinct photos, "
             f"{summary['duration']}s"
         )
+
+        if animate != "none":
+            say(f"4b  animate     provider={video.available(config)}, shots={animate}")
+            result.warnings.extend(
+                animate_stage.run(board, product, profile, config, run_dir, animate, say=say)
+            )
+        board.save(os.path.join(run_dir, f"storyboard-{item.variant}.json"))
 
     # --- stage 5 -----------------------------------------------------------
     if render:
@@ -151,6 +159,11 @@ def _write_summary(result: RunResult, profile: dict[str, Any], fmt: dict[str, An
         "brand": profile.get("id"),
         "format": fmt.get("id"),
         "tts": config.resolved_tts(),
+        "video": config.resolved_video(),
+        "animated_shots": {
+            board.variant: [s.index for s in board.shots if s.source_video]
+            for board in result.boards
+        },
         "scriptwriter": "claude" if config.anthropic_api_key else "template",
         "variants": [
             {

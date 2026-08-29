@@ -131,6 +131,7 @@ class Shot(JsonMixin):
     on_screen: str
     words: list[Word] = field(default_factory=list)
     audio_path: str = ""
+    source_video: str = ""      # provider clip, when this shot was animated
     clip_path: str = ""
 
     @classmethod

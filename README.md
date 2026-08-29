@@ -58,6 +58,7 @@ machine decided, fix it by hand, and re-run from there.
 | 2 | **script** | `script-a.json` | `ANTHROPIC_API_KEY` (falls back to templates) |
 | 3 | **voiceover** | `audio-a/beat*.mp3` | ElevenLabs or OpenAI key (falls back to silence) |
 | 4 | **storyboard** | `storyboard-a.json` | — |
+| 4b | **animate** *(opt-in)* | `animated-a/shot*.mp4` | Runway or fal key, `--animate` |
 | 5 | **render** | `<handle>-a.mp4` | FFmpeg |
 
 Everything has a keyless fallback, so a fresh clone with only FFmpeg installed
@@ -96,6 +97,42 @@ shots into the list:
 ```json
 {"images": [{"url": "shots/lamp-dark.jpg", "altText": "lamp off, room lit"}]}
 ```
+
+## Animating the stills
+
+By default a shot is a Ken Burns move over a real photo. With a key you can
+send selected shots to an image-to-video model instead, which animates **your
+photo** — it is never asked to invent a product.
+
+```bash
+autoreels make solaris --animate hook      # just the opening shot
+autoreels make solaris --animate 0,3       # specific shots
+autoreels make solaris --animate all       # everything, priciest
+```
+
+Default is `none`. These services bill per clip, so nothing is sent unless you
+ask. `--animate hook` is the sensible setting: the first two seconds decide
+whether the rest gets watched.
+
+Set one key — `RUNWAY_API_KEY` or `FAL_API_KEY` (fal hosts Kling) — and
+`AUTOREELS_VIDEO=auto` picks it up. Model ids on both services change often, so
+the endpoint, model and aspect ratio are all environment variables; a rename is
+a `.env` edit, not a patch.
+
+**Fine repeating geometry is the failure case.** These models redraw the frame,
+and a lattice or a pleat comes back subtly wrong — which for a craft brand is
+worse than no animation at all. A brand profile can name the tags to avoid:
+
+```json
+"animation": {
+  "avoid_tags": ["Kumiko Serisi"],
+  "avoid_reason": "Fine repeating lattice — the motif comes back wrong."
+}
+```
+
+autoreels warns and continues rather than blocking; the call is yours. Any shot
+that fails or times out silently keeps its Ken Burns move, so a partial failure
+still produces a finished video.
 
 ## Brand profiles
 

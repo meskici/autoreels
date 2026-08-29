@@ -45,6 +45,21 @@ class Config:
     openai_tts_model: str = "gpt-4o-mini-tts"
     openai_tts_voice: str = "alloy"
 
+    # --- Image-to-video ----------------------------------------------------
+    # Endpoints and model ids move faster than this file. All overridable.
+    video_provider: str = "auto"     # auto | runway | fal | none
+    runway_api_key: str = ""
+    runway_base_url: str = "https://api.dev.runwayml.com"
+    runway_api_version: str = "2024-11-06"
+    runway_model: str = "gen4_turbo"
+    runway_ratio: str = "720:1280"
+    fal_api_key: str = ""
+    fal_base_url: str = "https://queue.fal.run"
+    fal_model: str = "fal-ai/kling-video/v1/standard/image-to-video"
+    fal_aspect_ratio: str = "9:16"
+    video_timeout: int = 600
+    video_poll_seconds: int = 5
+
     # --- Render ------------------------------------------------------------
     ffmpeg: str = "ffmpeg"
     ffprobe: str = "ffprobe"
@@ -77,6 +92,18 @@ class Config:
             openai_api_key=env("OPENAI_API_KEY", ""),
             openai_tts_model=env("OPENAI_TTS_MODEL", "gpt-4o-mini-tts"),
             openai_tts_voice=env("OPENAI_TTS_VOICE", "alloy"),
+            video_provider=env("AUTOREELS_VIDEO", "auto"),
+            runway_api_key=env("RUNWAY_API_KEY", ""),
+            runway_base_url=env("RUNWAY_BASE_URL", "https://api.dev.runwayml.com").rstrip("/"),
+            runway_api_version=env("RUNWAY_API_VERSION", "2024-11-06"),
+            runway_model=env("RUNWAY_MODEL", "gen4_turbo"),
+            runway_ratio=env("RUNWAY_RATIO", "720:1280"),
+            fal_api_key=env("FAL_API_KEY", ""),
+            fal_base_url=env("FAL_BASE_URL", "https://queue.fal.run").rstrip("/"),
+            fal_model=env("FAL_MODEL", "fal-ai/kling-video/v1/standard/image-to-video"),
+            fal_aspect_ratio=env("FAL_ASPECT_RATIO", "9:16"),
+            video_timeout=int(env("AUTOREELS_VIDEO_TIMEOUT", "600")),
+            video_poll_seconds=int(env("AUTOREELS_VIDEO_POLL", "5")),
             ffmpeg=env("FFMPEG_BIN", "ffmpeg"),
             ffprobe=env("FFPROBE_BIN", "ffprobe"),
             width=int(env("AUTOREELS_WIDTH", "1080")),
@@ -87,6 +114,15 @@ class Config:
             runs_dir=env("AUTOREELS_RUNS_DIR", "runs"),
             brand=env("AUTOREELS_BRAND", "kapya"),
         )
+
+    def resolved_video(self) -> str:
+        if self.video_provider != "auto":
+            return self.video_provider
+        if self.runway_api_key:
+            return "runway"
+        if self.fal_api_key:
+            return "fal"
+        return "none"
 
     def resolved_tts(self) -> str:
         if self.tts_provider != "auto":

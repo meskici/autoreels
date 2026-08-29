@@ -6,7 +6,13 @@
   "market": "",
   "positioning": "Lead with what the product does for the buyer, not with specifications.",
   "voice": "Direct, concrete, no hype. Short sentences.",
-  "banned_words": ["best", "#1", "revolutionary", "game-changing", "unbeatable"],
+  "banned_words": [
+    "best",
+    "#1",
+    "revolutionary",
+    "game-changing",
+    "unbeatable"
+  ],
   "copy_rules": [
     "Every claim must trace to the product description.",
     "No invented materials, dimensions, or history.",
@@ -52,5 +58,10 @@
   ],
   "cta": "Link in bio.",
   "hashtag_seeds": [],
-  "notes": []
+  "notes": [],
+  "animation": {
+    "prompt_hint": "Lighting stays as photographed. Nothing in the scene moves except the camera.",
+    "avoid_tags": [],
+    "avoid_reason": ""
+  }
 }

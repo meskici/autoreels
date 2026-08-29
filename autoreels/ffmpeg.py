@@ -114,6 +114,40 @@ def render_clip(
     return dest
 
 
+def conform_clip(
+    ffmpeg: str,
+    source: str,
+    dest: str,
+    *,
+    duration: float,
+    width: int,
+    height: int,
+    fps: int,
+) -> str:
+    """Bring a provider-generated clip onto the timeline's terms.
+
+    Services return their own resolution, frame rate and length. Everything
+    downstream — the concat demuxer especially — assumes one uniform stream, so
+    scale-crop to the canvas, resample to our fps, and trim to exactly the beat.
+    If the clip came back shorter than the beat, hold its last frame rather
+    than let the concat run short and desync the audio.
+    """
+    run([
+        ffmpeg, "-y", "-loglevel", "error", "-i", source,
+        "-vf", (
+            f"scale={width}:{height}:force_original_aspect_ratio=increase,"
+            f"crop={width}:{height},fps={fps},"
+            f"tpad=stop_mode=clone:stop_duration={duration:.3f},"
+            f"trim=0:{duration:.3f},setpts=PTS-STARTPTS,setsar=1,format=yuv420p"
+        ),
+        "-c:v", "libx264", "-preset", "veryfast", "-crf", "20",
+        "-pix_fmt", "yuv420p", "-r", str(fps), "-an",
+        "-frames:v", str(max(int(round(duration * fps)), 1)),
+        dest,
+    ])
+    return dest
+
+
 def concat_clips(ffmpeg: str, clips: list[str], dest: str, work_dir: str) -> str:
     listing = os.path.join(work_dir, "clips.txt")
     with open(listing, "w", encoding="utf-8") as handle:

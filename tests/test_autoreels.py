@@ -8,6 +8,7 @@ from __future__ import annotations
 import json
 import os
 import shutil
+import subprocess
 import sys
 import tempfile
 import unittest
@@ -16,8 +17,9 @@ sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 from autoreels import brand, captions, ffmpeg  # noqa: E402
 from autoreels.config import Config  # noqa: E402
-from autoreels.models import Image, Product, Shot, Word  # noqa: E402
-from autoreels.providers import shopify, tts  # noqa: E402
+from autoreels.models import Image, Product, Shot, Storyboard, Word  # noqa: E402
+from autoreels.providers import shopify, tts, video  # noqa: E402
+from autoreels.stages import animate as animate_stage  # noqa: E402
 from autoreels.providers.llm import extract_json  # noqa: E402
 from autoreels.stages import script as script_stage  # noqa: E402
 from autoreels.stages.storyboard import _lay_out_words  # noqa: E402
@@ -276,6 +278,111 @@ class TestTTSFallback(unittest.TestCase):
         self.assertEqual(speech.duration, 0.0)
 
 
+class TestAnimateSelection(unittest.TestCase):
+    def test_spec_forms(self):
+        self.assertEqual(animate_stage.select("none", 5), set())
+        self.assertEqual(animate_stage.select("", 5), set())
+        self.assertEqual(animate_stage.select("hook", 5), {0})
+        self.assertEqual(animate_stage.select("all", 3), {0, 1, 2})
+        self.assertEqual(animate_stage.select("0,2", 5), {0, 2})
+
+    def test_out_of_range_indices_are_dropped(self):
+        self.assertEqual(animate_stage.select("0,9", 3), {0})
+
+    def test_hook_on_an_empty_board_selects_nothing(self):
+        self.assertEqual(animate_stage.select("hook", 0), set())
+
+    def test_garbage_spec_is_rejected_with_the_valid_forms(self):
+        with self.assertRaises(ValueError) as caught:
+            animate_stage.select("sometimes", 5)
+        self.assertIn("hook", str(caught.exception))
+
+
+class TestAnimateGuards(unittest.TestCase):
+    def setUp(self):
+        self.profile = brand.load("kapya")
+
+    def test_lattice_products_are_flagged(self):
+        kumiko = shopify.load_json(FIXTURE)
+        self.assertIn("Kumiko Serisi", kumiko.tags)
+        self.assertIn("lattice", animate_stage.risky(kumiko, self.profile))
+
+    def test_other_products_are_not_flagged(self):
+        impact = shopify.load_json(
+            os.path.join(os.path.dirname(FIXTURE), "catalog", "impact.json"))
+        self.assertEqual(animate_stage.risky(impact, self.profile), "")
+
+    def test_prompt_forbids_redrawing_the_product(self):
+        product = shopify.load_json(FIXTURE)
+        prompt = animate_stage.build_prompt("Altı kollu yıldız", "zoom_in", product, self.profile)
+        self.assertIn("keeps its exact shape", prompt)
+        self.assertIn("Do not redraw", prompt)
+        self.assertIn("push in", prompt)
+
+    def test_requesting_animation_without_a_provider_warns_instead_of_failing(self):
+        product = shopify.load_json(FIXTURE)
+        board = Storyboard(variant="a", shots=[
+            Shot(index=0, image_path="x.jpg", start=0.0, duration=3.0,
+                 motion="zoom_in", on_screen="hi")])
+        warnings = animate_stage.run(board, product, self.profile, Config(),
+                                     tempfile.gettempdir(), "hook", say=lambda *a: None)
+        self.assertEqual(len(warnings), 1)
+        self.assertIn("no video provider", warnings[0])
+        self.assertEqual(board.shots[0].source_video, "")
+
+
+class TestVideoProvider(unittest.TestCase):
+    def test_clip_length_covers_the_beat(self):
+        self.assertEqual(video.pick_length(2.5), 5)
+        self.assertEqual(video.pick_length(5.0), 5)
+        self.assertEqual(video.pick_length(5.1), 10)
+
+    def test_public_urls_pass_through_unchanged(self):
+        self.assertEqual(video._image_reference("https://cdn/x.jpg"), "https://cdn/x.jpg")
+
+    def test_local_files_become_data_uris(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            path = os.path.join(tmp, "x.jpg")
+            with open(path, "wb") as handle:
+                handle.write(b"\xff\xd8\xff")
+            self.assertTrue(video._image_reference(path).startswith("data:image/jpeg;base64,"))
+
+    def test_missing_local_file_is_reported(self):
+        with self.assertRaises(video.VideoUnavailable):
+            video._image_reference("/nope/missing.jpg")
+
+    def test_no_key_means_no_provider(self):
+        self.assertEqual(Config().resolved_video(), "none")
+        with self.assertRaises(video.VideoUnavailable):
+            video.animate("https://cdn/x.jpg", "p", 3.0, "/tmp/x", Config())
+
+
+@unittest.skipUnless(shutil.which("ffmpeg"), "ffmpeg not installed")
+class TestConformClip(unittest.TestCase):
+    """Provider clips arrive at the provider's resolution, fps and length."""
+
+    def setUp(self):
+        self.dir = tempfile.mkdtemp()
+        self.source = os.path.join(self.dir, "provider.mp4")
+        ffmpeg.run(["ffmpeg", "-y", "-loglevel", "error", "-f", "lavfi",
+                    "-i", "testsrc2=size=1280x720:duration=5:rate=24",
+                    "-c:v", "libx264", "-pix_fmt", "yuv420p", self.source])
+
+    def tearDown(self):
+        shutil.rmtree(self.dir, ignore_errors=True)
+
+    def _conform(self, duration: float) -> str:
+        dest = os.path.join(self.dir, f"out{duration}.mp4")
+        return ffmpeg.conform_clip("ffmpeg", self.source, dest, duration=duration,
+                                   width=1080, height=1920, fps=30)
+
+    def test_trims_a_long_clip_to_the_beat(self):
+        self.assertAlmostEqual(tts.probe_duration(self._conform(3.2)), 3.2, delta=0.1)
+
+    def test_holds_the_last_frame_when_the_clip_is_short(self):
+        self.assertAlmostEqual(tts.probe_duration(self._conform(7.5)), 7.5, delta=0.1)
+
+
 @unittest.skipUnless(shutil.which("ffmpeg"), "ffmpeg not installed")
 class TestRender(unittest.TestCase):
     """End-to-end: product JSON in, playable vertical MP4 out."""
@@ -315,6 +422,36 @@ class TestRender(unittest.TestCase):
 
         for name in ("product.json", "script-a.json", "storyboard-a.json", "run.json"):
             self.assertTrue(os.path.exists(os.path.join(self.dir, "run", name)), name)
+
+    def test_render_prefers_an_animated_clip_over_ken_burns(self):
+        """A shot with source_video must render from the clip, not the still."""
+        from autoreels.stages import render as render_stage
+
+        still = os.path.join(self.dir, "still.jpg")
+        ffmpeg.run(["ffmpeg", "-y", "-loglevel", "error", "-f", "lavfi",
+                    "-i", "color=c=red:size=1200x1500:d=1", "-frames:v", "1", still])
+        generated = os.path.join(self.dir, "generated.mp4")
+        ffmpeg.run(["ffmpeg", "-y", "-loglevel", "error", "-f", "lavfi",
+                    "-i", "color=c=green:size=1280x720:d=5:r=24",
+                    "-c:v", "libx264", "-pix_fmt", "yuv420p", generated])
+
+        board = Storyboard(variant="a", shots=[
+            Shot(index=0, image_path=still, start=0.0, duration=2.0,
+                 motion="zoom_in", on_screen="", source_video=generated)])
+        out = render_stage.render(board, Config(), self.dir,
+                                  os.path.join(self.dir, "out.mp4"))
+
+        frame = os.path.join(self.dir, "frame.png")
+        ffmpeg.run(["ffmpeg", "-y", "-loglevel", "error", "-ss", "1", "-i", out,
+                    "-frames:v", "1", frame])
+        # Sample the centre pixel: green means the generated clip won.
+        stats = subprocess.run(
+            ["ffmpeg", "-v", "error", "-i", frame, "-vf",
+             "crop=1:1:540:960,format=rgb24", "-f", "rawvideo", "-"],
+            capture_output=True)
+        red, green, blue = stats.stdout[:3]
+        self.assertGreater(green, red, "expected the generated (green) clip, got the still")
+        self.assertGreater(green, blue)
 
     def test_storyboard_round_trip_keeps_the_narration(self):
         """`autoreels render` reads a saved storyboard — the audio must survive it."""

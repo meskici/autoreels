@@ -19,7 +19,7 @@ import sys
 from . import __version__, brand
 from .config import Config
 from .models import Product, Script, Storyboard
-from .providers import tts
+from .providers import tts, video
 from .stages import render as render_stage
 
 
@@ -33,6 +33,9 @@ def _add_common(parser: argparse.ArgumentParser) -> None:
     parser.add_argument("--variants", type=int, default=1,
                         help="how many distinct scripts to produce")
     parser.add_argument("--music", default="", help="path to a music bed (mp3/m4a/wav)")
+    parser.add_argument("--animate", default="none", metavar="WHICH",
+                        help="animate stills into real clips: none (default), hook, "
+                             "all, or shot indices like 0,2. Billed per clip by the provider.")
     parser.add_argument("--script-json", default="",
                         help="skip scriptwriting and use this script (or list of scripts)")
     parser.add_argument("--out", default="", help="run directory (default: runs/<handle>-<time>)")
@@ -70,6 +73,7 @@ def cmd_make(args, config: Config) -> int:
         fmt_id=args.fmt,
         variants=max(args.variants, 1),
         music=args.music,
+        animate=args.animate,
         render=not args.no_render,
         run_dir=args.out,
         script_json=args.script_json,
@@ -119,6 +123,7 @@ def cmd_doctor(args, config: Config) -> int:
         (status(bool(config.anthropic_api_key)), "claude",
          config.model if config.anthropic_api_key else "no key — template scriptwriter"),
         ("ok  ", "voice", tts.available(config)),
+        ("ok  ", "video", video.available(config)),
         ("ok  ", "brands", ", ".join(brand.available())),
     ]
     print(f"autoreels {__version__}\n")

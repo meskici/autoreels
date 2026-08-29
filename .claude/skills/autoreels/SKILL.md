@@ -80,6 +80,14 @@ Use `--variants 3` whenever the user is testing hooks; one variant only when
 they named a specific angle. Add `--music <path>` only if they supplied a bed —
 never source music yourself.
 
+`--animate` sends stills to an image-to-video model. It costs real money per
+clip, so never add it on your own initiative — only when the user asks, and
+default to `--animate hook` rather than `all` unless they say otherwise. Check
+`doctor` for a configured provider first, and repeat the brand's warning if the
+product carries an `avoid_tags` tag: for fine repeating geometry the model
+redraws the motif and the result is off-brand, which matters more here than a
+bit of extra motion.
+
 The command prints each stage, then the full script, caption and hashtags per
 variant. Relay the script and the output paths. Do not paste the JSON files.
 
@@ -95,7 +103,9 @@ ffmpeg -y -loglevel error -ss 4 -i runs/<run>/<handle>-a.mp4 -frames:v 1 /tmp/fr
 
 Read the frame. Check that the caption sits inside the frame, that the photo
 under it is the one the beat is talking about, and that the product is not
-cropped out of shot by the Ken Burns move. If a beat is wrong, edit
+cropped out of shot by the Ken Burns move. On any animated shot, check the
+product's geometry against the source photo — if the model redrew a motif,
+say so and re-render that shot without animation. If a beat is wrong, edit
 `script-a.json` and re-run with `--script-json` rather than regenerating.
 
 Then send the MP4 to the user with `SendUserFile`.
