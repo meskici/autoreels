@@ -1,0 +1,41 @@
+[
+  {
+    "fmt": "motif",
+    "beats": [
+      {"role": "hook", "voiceover": "Bu yüzey bir göktaşı çarpmasından kalan zemini andırıyor.", "on_screen": "Çarpma izi", "image_index": 0, "duration": 2.8, "motion": "zoom_in"},
+      {"role": "body", "voiceover": "Kenarlarda yığılma var, ortada boşluk.", "on_screen": "Kenarda yığılma, ortada boşluk", "image_index": 1, "duration": 4.2, "motion": "pan_right"},
+      {"role": "body", "voiceover": "Krater dokusu ışıkta derinlik kazanıyor.", "on_screen": "Işıkta derinleşiyor", "image_index": 9, "duration": 4.5, "motion": "zoom_out"},
+      {"role": "body", "voiceover": "Yandığında gölgeler kraterin çıkıntılarını uzatıyor.", "on_screen": "Gölgeler uzuyor", "image_index": 2, "duration": 5.0, "motion": "pan_left"},
+      {"role": "cta", "voiceover": "Adı Impact. Profildeki linkten inceleyebilirsin.", "on_screen": "Impact", "image_index": 3, "duration": 3.0, "motion": "zoom_out"}
+    ],
+    "caption": "Yüzey, bir göktaşı çarpmasından sonra kalan zemini andırıyor: kenarlarda yığılma, ortada boşluk. Yandığında ışık çarpma noktasından dışarı yayılıyor ve gölgeler kraterin çıkıntılarını uzatıyor. Sizce bir lamba bir manzaraya benzeyebilir mi?",
+    "hashtags": ["kapyacraft", "impact", "dekoratifaydinlatma", "masalambasi", "elyapimi"],
+    "notes": "Hook is the crater surface, not the product name. Wish there were an unlit frame to open on."
+  },
+  {
+    "fmt": "motif",
+    "beats": [
+      {"role": "hook", "voiceover": "Bir kütlenin tam içinden silindir geçiyor.", "on_screen": "İçinden geçiyor", "image_index": 1, "duration": 2.8, "motion": "zoom_in"},
+      {"role": "body", "voiceover": "Işık iki ucundan birden çıkıyor.", "on_screen": "İki uçtan da ışık", "image_index": 0, "duration": 4.2, "motion": "zoom_out"},
+      {"role": "body", "voiceover": "Beyaz, krater dokulu bir gövdenin içine saplanmış.", "on_screen": "Krater dokulu gövde", "image_index": 9, "duration": 4.5, "motion": "pan_right"},
+      {"role": "body", "voiceover": "27 santim, 510 gram. Tek başına duracak ölçüde.", "on_screen": "27 cm, tek başına", "image_index": 3, "duration": 5.0, "motion": "static"},
+      {"role": "cta", "voiceover": "Salonda mı, çalışma masasında mı dururdu?", "on_screen": "Impact", "image_index": 2, "duration": 3.0, "motion": "zoom_out"}
+    ],
+    "caption": "Beyaz, krater dokulu bir kütlenin içine silindir bir gövde saplanmış. Işık çarpma noktasından dışarı yayılıyor. 27 cm boyunda, salonda ya da çalışma masasında tek başına duracak ölçüde. Sizde nereye koyardınız?",
+    "hashtags": ["kapyacraft", "impact", "heykelsilamba", "masalambasi", "tasarimlamba"],
+    "notes": "Hook is the form, not the story. Uses the close side-on frame that variant a only glances at."
+  },
+  {
+    "fmt": "motif",
+    "beats": [
+      {"role": "hook", "voiceover": "Aynı lamba, iki farklı taş.", "on_screen": "Aynı lamba, iki taş", "image_index": 4, "duration": 2.8, "motion": "zoom_in"},
+      {"role": "body", "voiceover": "Obsidyen siyahta krater dokusu daha derin okunuyor.", "on_screen": "Obsidyen: daha derin", "image_index": 5, "duration": 4.5, "motion": "zoom_out"},
+      {"role": "body", "voiceover": "Beyazda ise yüzey ışığı yayıyor.", "on_screen": "Beyaz: yayılan ışık", "image_index": 0, "duration": 4.2, "motion": "pan_left"},
+      {"role": "body", "voiceover": "Her ikisi de siparişten sonra İstanbul'da üretiliyor.", "on_screen": "İstanbul'da, sipariş üzerine", "image_index": 6, "duration": 5.0, "motion": "pan_right"},
+      {"role": "cta", "voiceover": "Hangisi senin odana uyar?", "on_screen": "Impact", "image_index": 7, "duration": 3.0, "motion": "zoom_out"}
+    ],
+    "caption": "Impact iki renkte: beyaz ve obsidyen siyah. Krater dokusu siyahta daha derin okunuyor, beyazda yüzey ışığı yayıyor. Her ikisi de siparişten sonra İstanbul'daki atölyede üretiliyor. Hangisi sizin odanıza uyar?",
+    "hashtags": ["kapyacraft", "impact", "obsidyen", "dekoratifaydinlatma", "masalambasi"],
+    "notes": "Colour-choice hook, and the only variant that uses the obsidyen photo set at all."
+  }
+]

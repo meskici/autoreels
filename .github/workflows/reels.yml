@@ -110,9 +110,24 @@ jobs:
           # The dropdown uses short catalog names; Shopify wants the real handle.
           HANDLE=$(python3 -c "import json,sys;print(json.load(open(sys.argv[1]))['handle'])" "$CATALOG")
 
+          # Scriptwriter, best available first. The template fallback opens every
+          # variant on the product name, so three variants are not three hooks —
+          # a hand-written set in examples/scripts beats it whenever one exists.
+          SCRIPT=()
+          CURATED="examples/scripts/${{ inputs.product }}.json"
+          if [ -n "$ANTHROPIC_API_KEY" ]; then
+            echo "Scripts: written by Claude against the brand rules"
+          elif [ -f "$CURATED" ]; then
+            echo "Scripts: curated set at $CURATED"
+            SCRIPT=(--script-json "$CURATED")
+          else
+            echo "Scripts: template fallback (no ANTHROPIC_API_KEY, no curated set)"
+          fi
+
           if [ "${{ inputs.live_shopify }}" = "true" ]; then
             echo "Pulling $HANDLE live from Shopify"
             python3 -m autoreels make "$HANDLE" \
+              "${SCRIPT[@]}" \
               --brand kapya \
               --format "${{ inputs.format }}" \
               --variants "${{ inputs.variants }}" \
@@ -122,6 +137,7 @@ jobs:
             echo "Using $CATALOG"
             python3 -m autoreels make \
               --product-json "$CATALOG" \
+              "${SCRIPT[@]}" \
               --brand kapya \
               --format "${{ inputs.format }}" \
               --variants "${{ inputs.variants }}" \
