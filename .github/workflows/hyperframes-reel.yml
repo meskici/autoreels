@@ -28,7 +28,10 @@ on:
         default: kumiko-asanoha
 
 permissions:
-  contents: read
+  # write, so the run can push the contact sheet back for review. The
+  # artifact blob host is unreachable from some environments; a committed
+  # JPEG is reviewable from anywhere that can read the repo.
+  contents: write
 
 jobs:
   render:
@@ -67,7 +70,9 @@ jobs:
       # or text that loses contrast over a bright frame - and that is worth
       # knowing before the video ships, not after.
       - name: Check
-        run: npx --yes hyperframes@0.8.17 check
+        run: |
+          set -o pipefail
+          npx --yes hyperframes@0.8.17 check 2>&1 | tee check.log
 
       - name: Render
         run: npx --yes hyperframes@0.8.17 render -o kumiko-asanoha-photo.mp4
@@ -81,6 +86,22 @@ jobs:
           ls -la kumiko-asanoha-photo.mp4
           ffprobe -v error -show_entries format=duration,size:stream=width,height,codec_name \
             -of default=noprint_wrappers=1 kumiko-asanoha-photo.mp4
+
+      - name: Publish the contact sheet for review
+        run: |
+          mkdir -p review
+          cp snapshots/contact-sheet.jpg review/
+          cp check.log review/
+          cd "$GITHUB_WORKSPACE"
+          git config user.name  "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -f reels/kumiko-asanoha/review
+          if git diff --cached --quiet; then
+            echo "review output unchanged"
+          else
+            git commit -m "Publish the photo cut's contact sheet [skip ci]"
+            git push origin "HEAD:${GITHUB_REF_NAME}"
+          fi
 
       - uses: actions/upload-artifact@v4
         with:
