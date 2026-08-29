@@ -5,7 +5,7 @@
   "language": "tr",
   "market": "Turkey",
   "positioning": "Handmade decorative table lamps at 2-3x the visible Turkish market price. The advantage is craft narrative and what the light does to a room. Never compete on price, discount, or spec.",
-  "voice": "Someone talking, not a museum label. Short spoken sentences, fragments welcome. Name a moment: the evening, the wall, the bedside table. Vary sentence length hard.",
+  "voice": "One person talking out loud, in Turkish, to one other person. Mert makes every lamp himself, so first person singular is the brand's real voice: yakıyorum, koyuyorum, bakıyorum. Fragments are fine. Sentences that resolve neatly read like copy.",
   "banned_words": [
     "en iyi",
     "lider",
@@ -135,5 +135,14 @@
     "A historical craft reference must stay in the past or stay about the tradition. 'Geleneğinde çıtalar çivisiz birleşir' is fine. 'Marangozlar çıtaları geçiriyor' reads as a claim about this lamp and is not.",
     "Do not name the production method. The brand sells the object and the light, not how it is made. Say 'üretiyoruz', never 'basıyoruz'.",
     "Prefer the product description's own verb over a stronger one. If it says 'andırıyor', do not write 'öyle görünüyor'."
+  ],
+  "spoken_turkish": [
+    "Write speech, not prose. Present continuous (-ıyor), not the aorist (-ır/-ur), which is written Turkish.",
+    "Active, never passive. 'gölgesi duvara düşürüldü' is a report; 'gölgesi duvara nasıl düşüyor, ona bakıyorum' is a person.",
+    "The brand is one man in a workshop. Prefer 'ben' over an impersonal brand voice, and 'sen' over 'çoğu insan'.",
+    "Use the particles Turkish speech runs on: bak, yani, zaten, işte, hani, da/de. One per script is usually enough; without any, it reads translated.",
+    "Written vocabulary to avoid: şikâyet etmek (say diyor), kütle (gövde, or just bu), mesafe (rephrase), bulunmaktadır, yer almaktadır.",
+    "Evidentials are how Turkish actually speculates: '4000K almışsındır' beats 'muhtemelen 4000K aldınız'.",
+    "Read every line aloud. If you would not say it to someone in a room, rewrite it."
   ]
 }

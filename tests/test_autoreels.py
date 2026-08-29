@@ -413,6 +413,60 @@ class TestCuratedCopy(unittest.TestCase):
                                    f"{name}/{v.variant} is metronomic: {lengths}")
 
 
+class TestSpokenRegister(unittest.TestCase):
+    """The scripts are read aloud. Written Turkish gives itself away."""
+
+    PATHS = ("impact", "kumiko-seigaiha")
+
+    # Words and forms that only appear in written Turkish, never in speech.
+    WRITTEN = re.compile(
+        r"şikâyet|şikayet et|bulunmakta|yer almakta|olarak bilin|"
+        r"kütle|mesafe|nezdinde|itibariyle|söz konusu",
+        re.I)
+    # Passive suffixes on the verbs this copy actually reaches for.
+    PASSIVE = re.compile(r"düşürül|yakılıp|kutulanma|üretilmekte|tasarlanmakta", re.I)
+    PARTICLES = ("bak", "yani", "zaten", "işte", "hani", "da ", "de ")
+
+    def setUp(self):
+        self.profile = brand.load("kapya")
+        self.fmt = brand.get_format(self.profile, "motif")
+
+    def _variants(self, name):
+        root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+        product = shopify.load_json(os.path.join(root, "examples", "catalog", f"{name}.json"))
+        return script_stage.load(
+            os.path.join(root, "examples", "scripts", f"{name}.json"),
+            product, self.profile, self.fmt)
+
+    def test_no_written_only_vocabulary(self):
+        for name in self.PATHS:
+            for v in self._variants(name):
+                spoken = " ".join(b.voiceover for b in v.beats)
+                hit = self.WRITTEN.search(spoken)
+                self.assertIsNone(hit, f"{name}/{v.variant}: {hit.group(0) if hit else ''!r}")
+
+    def test_no_passive_voice_in_the_voiceover(self):
+        for name in self.PATHS:
+            for v in self._variants(name):
+                spoken = " ".join(b.voiceover for b in v.beats)
+                hit = self.PASSIVE.search(spoken)
+                self.assertIsNone(hit, f"{name}/{v.variant}: {hit.group(0) if hit else ''!r}")
+
+    def test_each_set_carries_speech_particles(self):
+        """Turkish without bak/yani/zaten reads translated."""
+        for name in self.PATHS:
+            spoken = " ".join(b.voiceover.lower()
+                              for v in self._variants(name) for b in v.beats)
+            found = [p for p in self.PARTICLES if p in spoken]
+            self.assertTrue(found, f"{name} has no speech particles at all")
+
+    def test_the_spoken_rules_reach_the_prompt(self):
+        product = shopify.load_json(FIXTURE)
+        prompt = script_stage._build_prompt(product, self.profile, self.fmt, 3)
+        self.assertIn("How this language is actually spoken", prompt)
+        self.assertIn("aorist", prompt)
+
+
 class TestMaterialTruth(unittest.TestCase):
     """Kapya.Craft lamps are printed, not woodworked, and the brand does not
     sell the method. A shipped script must not imply either."""
@@ -420,9 +474,11 @@ class TestMaterialTruth(unittest.TestCase):
     PATHS = ("impact", "kumiko-seigaiha")
 
     # Verbs and nouns that describe someone working timber, stone or a printer.
+    # Word boundaries matter: "oyuyor" (carves) lives inside "koyuyorum" (puts),
+    # and "dokuyor" (weaves) inside "dokunuyor" (touches).
     CRAFT_CLAIM = re.compile(
-        r"marangoz|çıta|çivi|oyuyor|oydu|yontuyor|yontul|"
-        r"rendel|zımparal|tornal|dokuyor|dokunmuş",
+        r"\bmarangoz|\bçıta|\bçivi|\boyuyor|\boydu\b|\byontuyor|\byontul|"
+        r"\brendel|\bzımparal|\btornal|\bdokuyor|\bdokunmuş",
         re.I)
     METHOD_CLAIM = re.compile(r"\bbas[ıi]yoruz\b|\b3d\b|üç boyutlu|filament|petg|pla\b", re.I)
 

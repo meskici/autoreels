@@ -2,163 +2,40 @@
   {
     "fmt": "motif",
     "beats": [
-      {
-        "role": "hook",
-        "voiceover": "Bu biçim kalıptan çıkamaz.",
-        "on_screen": "Kalıptan çıkamaz",
-        "image_index": 0,
-        "duration": 2.6,
-        "motion": "zoom_in"
-      },
-      {
-        "role": "body",
-        "voiceover": "Kalıbı yok.",
-        "on_screen": "Kalıbı yok",
-        "image_index": 1,
-        "duration": 3.0,
-        "motion": "static"
-      },
-      {
-        "role": "body",
-        "voiceover": "Kütlenin tam içinden bir silindir geçiyor.",
-        "on_screen": "İçinden geçiyor",
-        "image_index": 9,
-        "duration": 4.8,
-        "motion": "pan_right"
-      },
-      {
-        "role": "body",
-        "voiceover": "Işık iki ucundan birden çıkıyor.",
-        "on_screen": "İki uçtan ışık",
-        "image_index": 2,
-        "duration": 5.0,
-        "motion": "zoom_out"
-      },
-      {
-        "role": "cta",
-        "voiceover": "Adı Impact. Yirmi yedi santim.",
-        "on_screen": "Impact",
-        "image_index": 3,
-        "duration": 3.6,
-        "motion": "zoom_in"
-      }
+      {"role": "hook", "voiceover": "Bunun kalıbı yok.", "on_screen": "Kalıbı yok", "image_index": 0, "duration": 2.4, "motion": "zoom_in"},
+      {"role": "body", "voiceover": "Çünkü böyle bir şey kalıptan çıkmaz.", "on_screen": "Kalıptan çıkmaz", "image_index": 1, "duration": 4.2, "motion": "static"},
+      {"role": "body", "voiceover": "İçinden silindir geçiyor, bak.", "on_screen": "İçinden geçiyor", "image_index": 9, "duration": 4.4, "motion": "pan_right"},
+      {"role": "body", "voiceover": "Işık iki ucundan da çıkıyor.", "on_screen": "İki uçtan ışık", "image_index": 2, "duration": 4.6, "motion": "zoom_out"},
+      {"role": "cta", "voiceover": "Adı Impact. Yirmi yedi santim.", "on_screen": "Impact", "image_index": 3, "duration": 3.6, "motion": "zoom_in"}
     ],
-    "caption": "Bu biçimin kalıbı yok, çünkü kalıptan çıkması mümkün değil. Kütlenin tam içinden bir silindir geçiyor ve ışık iki ucundan birden çıkıyor. Impact, yirmi yedi santim.",
-    "hashtags": [
-      "kapyacraft",
-      "impact",
-      "heykelsilamba",
-      "dekoratifaydinlatma",
-      "masalambasi"
-    ],
-    "notes": "Curiosity hook from Hakkımızda: geometries a mould cannot release. Says nothing about how it is made."
+    "caption": "Bunun kalıbı yok, çünkü böyle bir şey kalıptan çıkmaz. İçinden silindir geçiyor, ışık iki ucundan da çıkıyor. Impact, yirmi yedi santim.",
+    "hashtags": ["kapyacraft", "impact", "heykelsilamba", "dekoratifaydinlatma", "masalambasi"],
+    "notes": "'bak' at the end of beat 3 is the whole difference between written and said."
   },
   {
     "fmt": "motif",
     "beats": [
-      {
-        "role": "hook",
-        "voiceover": "Günün çoğunda bu lamba kapalı.",
-        "on_screen": "Günün çoğu kapalı",
-        "image_index": 9,
-        "duration": 2.8,
-        "motion": "zoom_in"
-      },
-      {
-        "role": "body",
-        "voiceover": "Kapalıyken de beğenmen lazım.",
-        "on_screen": "Kapalıyken de bakacaksın",
-        "image_index": 3,
-        "duration": 4.0,
-        "motion": "pan_left"
-      },
-      {
-        "role": "body",
-        "voiceover": "Kapalıyken krater.",
-        "on_screen": "Kapalıyken: krater",
-        "image_index": 1,
-        "duration": 3.6,
-        "motion": "zoom_out"
-      },
-      {
-        "role": "body",
-        "voiceover": "Yanınca gölgeler çıkıntıları uzatıyor.",
-        "on_screen": "Yanınca: gölge",
-        "image_index": 0,
-        "duration": 5.0,
-        "motion": "zoom_in"
-      },
-      {
-        "role": "cta",
-        "voiceover": "Yirmi yedi santim. Rafta durur.",
-        "on_screen": "Impact",
-        "image_index": 2,
-        "duration": 3.8,
-        "motion": "zoom_out"
-      }
+      {"role": "hook", "voiceover": "Lamba günün çoğunda kapalı duruyor.", "on_screen": "Günün çoğu kapalı", "image_index": 9, "duration": 2.8, "motion": "zoom_in"},
+      {"role": "body", "voiceover": "Yani kapalıyken de beğenmen lazım.", "on_screen": "Kapalıyken de bakacaksın", "image_index": 3, "duration": 4.2, "motion": "pan_left"},
+      {"role": "body", "voiceover": "Bu kapalıyken taş gibi duruyor.", "on_screen": "Kapalıyken taş", "image_index": 1, "duration": 4.4, "motion": "zoom_out"},
+      {"role": "body", "voiceover": "Yanınca gölgeler uzuyor.", "on_screen": "Yanınca gölge", "image_index": 0, "duration": 4.6, "motion": "zoom_in"},
+      {"role": "cta", "voiceover": "Yirmi yedi santim. Rafta iyi duruyor.", "on_screen": "Impact", "image_index": 2, "duration": 3.6, "motion": "zoom_out"}
     ],
-    "caption": "Günün çoğunda bir masa lambası kapalı duruyor, o yüzden kapalıyken de beğenmen lazım. Impact kapalıyken krater dokulu bir kütle; yanınca gölgeler çıkıntıları uzatıyor. Yirmi yedi santim, rafta durur.",
-    "hashtags": [
-      "kapyacraft",
-      "impact",
-      "dekoratifobje",
-      "masalambasi",
-      "tasarimlamba"
-    ],
-    "notes": "Your lamp guide's third category, object-when-off, turned into the hook. Uses the unlit-looking frames properly."
+    "caption": "Lamba günün çoğunda kapalı duruyor, yani kapalıyken de beğenmen lazım. Impact kapalıyken taş gibi duruyor, yanınca gölgeler uzuyor. Yirmi yedi santim, rafta iyi duruyor.",
+    "hashtags": ["kapyacraft", "impact", "dekoratifobje", "masalambasi", "tasarimlamba"],
+    "notes": "'yani' opening the second line. 'taş gibi duruyor' is what someone says; 'krater dokulu bir kütle' is what a catalogue says."
   },
   {
     "fmt": "motif",
     "beats": [
-      {
-        "role": "hook",
-        "voiceover": "Bu markada tek kişi var.",
-        "on_screen": "Tek kişi",
-        "image_index": 3,
-        "duration": 2.6,
-        "motion": "zoom_in"
-      },
-      {
-        "role": "body",
-        "voiceover": "Tasarlayan da kutulayan da aynı kişi.",
-        "on_screen": "İkisi de aynı kişi",
-        "image_index": 6,
-        "duration": 4.6,
-        "motion": "pan_right"
-      },
-      {
-        "role": "body",
-        "voiceover": "Yazdığında cevap veren de o.",
-        "on_screen": "Cevap veren de o",
-        "image_index": 4,
-        "duration": 4.4,
-        "motion": "zoom_out"
-      },
-      {
-        "role": "body",
-        "voiceover": "Adı Mert. Atölye İstanbul'da.",
-        "on_screen": "Mert. İstanbul.",
-        "image_index": 0,
-        "duration": 5.0,
-        "motion": "static"
-      },
-      {
-        "role": "cta",
-        "voiceover": "Impact. Sipariş üzerine.",
-        "on_screen": "Impact",
-        "image_index": 2,
-        "duration": 3.4,
-        "motion": "zoom_out"
-      }
+      {"role": "hook", "voiceover": "Burada tek kişiyim.", "on_screen": "Tek kişiyim", "image_index": 3, "duration": 2.4, "motion": "zoom_in"},
+      {"role": "body", "voiceover": "Tasarlayan da ben, kutulayan da ben.", "on_screen": "İkisi de ben", "image_index": 6, "duration": 4.6, "motion": "pan_right"},
+      {"role": "body", "voiceover": "Mail atarsan cevap veren de ben.", "on_screen": "Cevap veren de ben", "image_index": 4, "duration": 4.6, "motion": "zoom_out"},
+      {"role": "body", "voiceover": "Adım Mert. Atölye İstanbul'da.", "on_screen": "Mert. İstanbul.", "image_index": 0, "duration": 5.0, "motion": "static"},
+      {"role": "cta", "voiceover": "Impact. Sen sipariş verince yapıyorum.", "on_screen": "Impact", "image_index": 2, "duration": 3.6, "motion": "zoom_out"}
     ],
-    "caption": "Kapya.Craft'ta tek kişi var. Tasarlayan da kutulayan da aynı kişi, support@kapyacraft.com adresine yazdığında cevap veren de o. Adı Mert, atölye İstanbul'da. Impact, sipariş üzerine.",
-    "hashtags": [
-      "kapyacraft",
-      "impact",
-      "tekkisi",
-      "istanbul",
-      "masalambasi"
-    ],
-    "notes": "Straight from Hakkımızda. A one-person brand is a real differentiator against Trendyol resellers and it costs nothing to say."
+    "caption": "Kapya.Craft'ta tek kişiyim. Tasarlayan da ben, kutulayan da ben, mail atarsan cevap veren de ben. Adım Mert, atölye İstanbul'da. Impact'i sen sipariş verince yapıyorum.",
+    "hashtags": ["kapyacraft", "impact", "istanbul", "atolye", "masalambasi"],
+    "notes": "Your own About page in the first person. This is the only voice a one-person brand actually has."
   }
 ]

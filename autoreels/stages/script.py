@@ -46,6 +46,9 @@ Copy smells to avoid (these are what make writing sound machine-made):
 Never claim (breaking one of these makes the ad false, not just clumsy):
 {never}
 
+How this language is actually spoken:
+{spoken}
+
 {brand_notes}
 
 # Video format: {fmt_label}
@@ -132,6 +135,8 @@ def _build_prompt(
                or "- (none listed)",
         never="\n".join(f"- {rule}" for rule in profile.get("never_claim", []))
               or "- (none listed)",
+        spoken="\n".join(f"- {rule}" for rule in profile.get("spoken_turkish", []))
+               or "- (none listed)",
         brand_notes=("Brand notes:\n" + "\n".join(f"- {n}" for n in notes)) if notes else "",
         fmt_label=fmt.get("label", fmt["id"]),
         fmt_brief=fmt.get("brief", ""),
