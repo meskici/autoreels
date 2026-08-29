@@ -25,6 +25,30 @@ difference is what happens in between:
 | Cost per video | per-credit | free, or cents of TTS |
 | Runs offline | no | yes, keyless, with the template scriptwriter |
 
+## Run it without installing anything
+
+`.github/workflows/reels.yml` renders on GitHub's runners. Actions → **Make
+reels** → *Run workflow* → pick a product, a format, how many variants → the
+MP4s land in the run's **Artifacts**, with a contact sheet and a summary of
+each video's length.
+
+The runner installs FFmpeg, reaches the Shopify CDN and every AI provider, and
+runs the tests before rendering. Nothing to install locally.
+
+Secrets are all optional — with none set you still get real videos (template
+scripts, silent audio, Ken Burns over your live product photos). Add them under
+*Settings → Secrets and variables → Actions* to upgrade each stage:
+
+| Secret | Upgrades |
+|---|---|
+| `ANTHROPIC_API_KEY` | scripts written to the brand rules, not templates |
+| `ELEVENLABS_API_KEY` | Turkish narration instead of silence |
+| `FAL_API_KEY` or `RUNWAY_API_KEY` | unlocks the `animate` option |
+| `SHOPIFY_ADMIN_TOKEN` | the *live_shopify* toggle, instead of the shipped catalog |
+
+`workflow_dispatch` only appears once the workflow file is on the repository's
+default branch — merge this branch there and the button shows up.
+
 ## Install
 
 ```bash

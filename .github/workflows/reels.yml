@@ -1,0 +1,178 @@
+name: Make reels
+
+# Renders reels on GitHub's runners instead of your laptop. The runner can
+# reach the Shopify CDN and every AI provider, and it already has the toolchain,
+# so there is nothing to install locally — pick a product, press the button,
+# download the MP4s from the run's Artifacts.
+#
+# Every secret below is optional. With none set you still get real videos:
+# template scripts, silent audio, Ken Burns over your live product photos.
+# Add secrets under Settings -> Secrets and variables -> Actions:
+#
+#   ANTHROPIC_API_KEY    scripts written to the brand rules instead of templates
+#   ELEVENLABS_API_KEY   Turkish narration instead of silence
+#   FAL_API_KEY          Kling image-to-video, for --animate
+#   RUNWAY_API_KEY       Runway image-to-video, alternative to FAL
+#   SHOPIFY_ADMIN_TOKEN  pull the product live instead of from examples/catalog
+
+on:
+  workflow_dispatch:
+    inputs:
+      product:
+        description: Product to make reels for
+        type: choice
+        required: true
+        default: kumiko-asanoha
+        options:
+          - kumiko-asanoha
+          - kumiko-seigaiha
+          - kumiko-kikko
+          - kumiko-tetra
+          - kaya-bazalt
+          - kaya-kristal
+          - solaris
+          - plise
+          - impact
+          - petek-duvar-saksisi
+          - petek-uclu-duvar-saksisi
+          - kubbe-duvar-saksisi
+          - halka-duvar-saksisi
+          - kose-duvar-saksisi
+          - kaya-duvar-saksisi
+      format:
+        description: Video format
+        type: choice
+        required: true
+        default: motif
+        options: [motif, lights_off, from_nature, series, dark_vs_lit]
+      variants:
+        description: How many hook variants
+        type: choice
+        required: true
+        default: '3'
+        options: ['1', '2', '3', '4']
+      animate:
+        description: "Image-to-video (costs money per clip; needs FAL_API_KEY or RUNWAY_API_KEY)"
+        type: choice
+        required: true
+        default: none
+        options: [none, hook, all]
+      live_shopify:
+        description: Pull the product live from Shopify (needs SHOPIFY_ADMIN_TOKEN)
+        type: boolean
+        required: false
+        default: false
+
+permissions:
+  contents: read
+
+jobs:
+  render:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install FFmpeg and fonts
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq ffmpeg fonts-dejavu-core
+
+      - name: Show what is configured
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          ELEVENLABS_API_KEY: ${{ secrets.ELEVENLABS_API_KEY }}
+          FAL_API_KEY: ${{ secrets.FAL_API_KEY }}
+          RUNWAY_API_KEY: ${{ secrets.RUNWAY_API_KEY }}
+          SHOPIFY_STORE: ${{ vars.SHOPIFY_STORE }}
+          SHOPIFY_ADMIN_TOKEN: ${{ secrets.SHOPIFY_ADMIN_TOKEN }}
+        run: python3 -m autoreels doctor || true
+
+      - name: Run the tests
+        run: python3 -m unittest discover tests
+
+      - name: Render
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          ELEVENLABS_API_KEY: ${{ secrets.ELEVENLABS_API_KEY }}
+          FAL_API_KEY: ${{ secrets.FAL_API_KEY }}
+          RUNWAY_API_KEY: ${{ secrets.RUNWAY_API_KEY }}
+          SHOPIFY_STORE: ${{ vars.SHOPIFY_STORE }}
+          SHOPIFY_ADMIN_TOKEN: ${{ secrets.SHOPIFY_ADMIN_TOKEN }}
+        run: |
+          set -o pipefail
+          CATALOG="examples/catalog/${{ inputs.product }}.json"
+          # The dropdown uses short catalog names; Shopify wants the real handle.
+          HANDLE=$(python3 -c "import json,sys;print(json.load(open(sys.argv[1]))['handle'])" "$CATALOG")
+
+          if [ "${{ inputs.live_shopify }}" = "true" ]; then
+            echo "Pulling $HANDLE live from Shopify"
+            python3 -m autoreels make "$HANDLE" \
+              --brand kapya \
+              --format "${{ inputs.format }}" \
+              --variants "${{ inputs.variants }}" \
+              --animate "${{ inputs.animate }}" \
+              --out "runs/${{ inputs.product }}" 2>&1 | tee render.log
+          else
+            echo "Using $CATALOG"
+            python3 -m autoreels make \
+              --product-json "$CATALOG" \
+              --brand kapya \
+              --format "${{ inputs.format }}" \
+              --variants "${{ inputs.variants }}" \
+              --animate "${{ inputs.animate }}" \
+              --out "runs/${{ inputs.product }}" 2>&1 | tee render.log
+          fi
+
+      - name: Summarise the run
+        if: always()
+        run: |
+          {
+            echo "## ${{ inputs.product }} — ${{ inputs.format }}"
+            echo
+            if [ -f "runs/${{ inputs.product }}/run.json" ]; then
+              echo '```json'
+              cat "runs/${{ inputs.product }}/run.json"
+              echo '```'
+            fi
+            echo
+            echo "### Videos"
+            for f in runs/${{ inputs.product }}/*.mp4; do
+              [ -e "$f" ] || continue
+              dur=$(ffprobe -v error -show_entries format=duration \
+                    -of default=noprint_wrappers=1:nokey=1 "$f" 2>/dev/null)
+              size=$(du -h "$f" | cut -f1)
+              echo "- \`$(basename "$f")\` — ${dur%.*}s, $size"
+            done
+            echo
+            echo "Download them from the **Artifacts** section of this run."
+          } >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Contact sheet
+        if: always()
+        run: |
+          mkdir -p contact
+          for f in runs/${{ inputs.product }}/*.mp4; do
+            [ -e "$f" ] || continue
+            name=$(basename "$f" .mp4)
+            ffmpeg -v error -i "$f" \
+              -vf "select='not(mod(n\,60))',scale=270:480,tile=5x1" \
+              -frames:v 1 "contact/$name.jpg" || true
+          done
+
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: reels-${{ inputs.product }}-${{ inputs.format }}
+          path: |
+            runs/**/*.mp4
+            runs/**/*.json
+            contact/*.jpg
+            render.log
+          retention-days: 30
+          if-no-files-found: warn
