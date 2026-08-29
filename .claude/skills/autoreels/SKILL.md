@@ -65,6 +65,20 @@ the format they asked for, say so and name the one extra phone shot that would
 unlock it. Then build the supported format or wait, whichever they choose.
 Never downgrade without telling them.
 
+## Step 3b: show the user the words before you render
+
+The user reads every line before it goes into a video. A false line reached a
+finished render once already, so this is not optional and it is not a
+formality.
+
+Print the on-screen text and the voiceover for every variant, in a table, and
+stop. Do not start the render in the same turn. Ask them to approve, edit a
+line, or throw a variant out.
+
+Check each line against the product description yourself first, and say which
+lines you are least sure of. A claim you cannot point at a sentence for does
+not go in the table; it goes in a question.
+
 ## Step 4: run it
 
 ```bash
