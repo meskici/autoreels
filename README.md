@@ -76,6 +76,13 @@ SHOPIFY_ADMIN_TOKEN=shpat_xxx
 autoreels make kumiko-asanoha
 ```
 
+**From the shipped catalog** — `examples/catalog/` holds all 15 Kapya.Craft
+products pulled live from Shopify, photos and alt text included, ready to run:
+
+```bash
+autoreels make --product-json examples/catalog/solaris.json --variants 3
+```
+
 **Without one** — save the product JSON and point at it. This is how you use it
 alongside the Shopify MCP in Claude, or with your own photos:
 
