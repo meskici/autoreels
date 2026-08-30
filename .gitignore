@@ -4,3 +4,5 @@ __pycache__/
 runs/
 .venv/
 *.egg-info/
+catalog-review/img/
+catalog-review/index.html

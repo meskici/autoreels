@@ -1,0 +1,63 @@
+name: Review the catalog
+
+# Puts each listing's words next to its own photographs, so a mismatch between
+# the two can be seen instead of argued about. Needs the Shopify CDN, which a
+# runner can reach.
+#
+# Read-only against the store: it fetches public CDN images and touches
+# nothing in Shopify.
+
+on:
+  push:
+    paths:
+      - 'scripts/review-catalog.py'
+      - '.github/workflows/catalog-review.yml'
+  workflow_dispatch:
+    inputs:
+      pattern:
+        description: Handle glob to review (e.g. kumiko-*, kaya-*, *)
+        type: string
+        required: true
+        default: 'kumiko-*'
+
+permissions:
+  contents: write
+
+jobs:
+  review:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Install Chrome Headless Shell
+        run: npx --yes hyperframes@0.8.17 browser ensure
+
+      - name: Build the comparison sheet
+        run: |
+          CHROME=$(find "$HOME/.cache/hyperframes/chrome" -name chrome-headless-shell -type f | head -1)
+          echo "chrome: $CHROME"
+          CHROME_BIN="$CHROME" python3 scripts/review-catalog.py "${{ inputs.pattern || 'kumiko-*' }}"
+
+      - name: Publish the sheet
+        run: |
+          git config user.name  "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -f catalog-review/catalog-review.png
+          if git diff --cached --quiet; then
+            echo "sheet unchanged"
+          else
+            git commit -m "Publish the catalog comparison sheet [skip ci]"
+            git push origin "HEAD:${GITHUB_REF_NAME}"
+          fi
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: catalog-review
+          path: catalog-review/
+          if-no-files-found: error
+          retention-days: 30
